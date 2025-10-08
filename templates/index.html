@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Website</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap & Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom Stylesheet -->
+    <link href="style.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Heebo', Arial, sans-serif;
+            background: linear-gradient(120deg, #1be309 0%, #c8e0bd 100%);
+            scroll-behavior: smooth;
+        }
+        .navbar {
+            box-shadow: 0 2px 8px rgba(252, 74, 26, 0.08);
+            backdrop-filter: blur(8px);
+            background: rgba(34, 34, 34, 0.85) !important;
+        }
+        .navbar-brand, .text-primary {
+            font-weight: 700;
+            color: #fc4a1a !important;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 8px rgba(252, 74, 26, 0.10);
+        }
+        .hero-header {
+            background: linear-gradient(120deg, #1afc34 0%, #d4c9b3 100%);
+            border-radius: 0 0 40px 40px;
+            box-shadow: 0 8px 32px rgba(60, 60, 60, 0.12);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-header::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('/static/images/chai_osa.png') no-repeat right bottom;
+            opacity: 0.04;
+            pointer-events: none;
+        }
+        .display-3 {
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 2px 8px rgba(252, 74, 26, 0.10);
+            animation: fadeInDown 1s;
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fc4a1a;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+        .service-item {
+            background: rgba(255,255,255,0.7);
+            box-shadow: 0 2px 8px rgba(252, 74, 26, 0.08);
+            border-radius: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            backdrop-filter: blur(4px);
+        }
+        .service-item:hover {
+            transform: translateY(-5px) scale(1.04);
+            box-shadow: 0 6px 18px rgba(252, 74, 26, 0.18);
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #0de605 0%, #d8d3c7 100%);
+            border: none;
+            font-weight: 700;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(252, 74, 26, 0.10);
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #f7b733 0%, #fc4a1a 100%);
+            box-shadow: 0 4px 16px rgba(252, 74, 26, 0.18);
+        }
+        .food-menu .col-md-6 {
+            margin-bottom: 1.5rem;
+        }
+        .food-menu img {
+            box-shadow: 0 2px 8px rgba(252, 74, 26, 0.10);
+            border-radius: 12px;
+            transition: transform 0.2s;
+        }
+        .food-menu img:hover {
+            transform: scale(1.08) rotate(-2deg);
+        }
+        .about-section {
+            background: rgba(255,255,255,0.8);
+            border-radius: 18px;
+            box-shadow: 0 2px 8px rgba(252, 74, 26, 0.08);
+            padding: 2rem 1rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(2px);
+        }
+        .contact-section {
+            background: #222;
+            color: #fff;
+            border-radius: 18px 18px 0 0;
+            box-shadow: 0 -2px 8px rgba(252, 74, 26, 0.08);
+            margin-top: 2rem;
+        }
+        .contact-section h4 {
+            font-weight: 700;
+            color: #f7b733;
+        }
+        .contact-section a {
+            color: #f7b733;
+            text-decoration: underline;
+        }
+        .contact-section a:hover {
+            color: #fc4a1a;
+        }
+        hr.bg-light {
+            opacity: 0.3;
+        }
+        @media (max-width: 600px) {
+            .display-3 {
+                font-size: 2.2rem;
+            }
+            .hero-header img {
+                width: 220px !important;
+            }
+            .about-section {
+                padding: 1rem 0.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="container-fluid position-relative p-0">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <!-- Logo -->
+                <a href="{{ url_for('menu') }}" class="nav-item nav-link">Menu</a>
+                <img src="/static/images/chai_osa.png" alt="Chai'osa Logo" class="me-2" width="50" height="50">
+                    <span classname="text-primary">Chai'osa Restaurant</span>
+                </a>
+        
+                <!-- Navbar Toggler (Hamburger Menu) -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+        
+                <!-- Navbar Links -->
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav ms-auto py-0 pe-4">
+                        <a href="#" class="nav-item nav-link active">Home</a>
+                        <a href="#about" class="nav-item nav-link">About</a>
+                        <a href="#service" class="nav-item nav-link">Service</a>
+                        <a href="#recommend" class="nav-item nav-link">Recommended</a>
+                        <a href="{{ url_for('menu') }}" class="nav-item nav-link">Menu</a>
+                        <a href="#contact" class="nav-item nav-link">Contact</a>
+                    </div>
+                    <style>
+                        body {
+                            scroll-behavior: smooth;
+                        }
+                    </style>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="container-fluid py-5 bg-dark hero-header mb-5">
+        <div class="container my-5 py-5">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6 text-center text-lg-start">
+                    <h1 class="display-3 text-white animated sliderInLeft">Enjoy Our <br> Delicious Meal</h1>
+                    <p class="text-white animated slideInLeft mb-4 pb-2">
+                       Welcome to Chai'osa Restaurant. We serve the best and most delicious food in town.
+                    </p>
+                </div>
+                <div class="col-lg-6 text-center text-lg-end overflow-hidden">
+                    <img src="/static/images/chai_osa.png" width="490px" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="service" class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-3 col-sm-6">
+                <div class="service-item rounded pt-3">
+                    <div class="p-4 text-center">
+                        <i class="fa fa-3x fa-user-tie text-primary mb-4"></i>
+                        <h5>Master Chefs</h5>
+                        <p>Working with top class Master Chefs</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="service-item rounded pt-3">
+                    <div class="p-4 text-center">
+                        <i class="fa fa-3x fa-utensils text-primary mb-4"></i>
+                        <h5>Delicious Food</h5>
+                        <p>Fresh ingredients and unique flavors.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="service-item rounded pt-3">
+                    <div class="p-4 text-center">
+                        <i class="fa fa-3x fa-truck text-primary mb-4"></i>
+                        <h5>Fast Delivery</h5>
+                        <p>Quick and efficient delivery service.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="service-item rounded pt-3">
+                    <div class="p-4 text-center">
+                        <i class="fa fa-3x fa-hands-helping text-primary mb-4"></i>
+                        <h5>24/7 Support</h5>
+                        <p>We are here to assist you anytime.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Food Menu Section -->
+<div id="recommend" class="container-xxl py-5">
+    <div class="container text-center">
+        <h5 class="section-title text-primary">Food Menu</h5>
+        <h1 class="mb-4">Most Popular Items</h1>
+        <div class="row g-4 justify-content-center">
+            <!-- Menu Item 1 -->
+            <div class="col-md-3">
+                <div class="card shadow food-card h-100">
+                    <img src="/static/images/samosa.png" class="card-img-top p-3" alt="Samosa">
+                    <div class="card-body">
+                        <h5 class="card-title d-flex justify-content-between align-items-center">
+                            <span><i class="fa fa-leaf text-success"></i> Samosa</span>
+                            <span class="badge bg-warning text-dark">₹30</span>
+                        </h5>
+                        <p class="card-text">Crispy and delicious samosas served hot.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Menu Item 2 -->
+            <div class="col-md-3">
+                <div class="card shadow food-card h-100">
+                    <img src="/static/images/chai.png" class="card-img-top p-3" alt="Chai">
+                    <div class="card-body">
+                        <h5 class="card-title d-flex justify-content-between align-items-center">
+                            <span><i class="fa fa-mug-hot text-danger"></i> Chai</span>
+                            <span class="badge bg-warning text-dark">₹40</span>
+                        </h5>
+                        <p class="card-text">A fragrant, spiced tea brewed with aromatic herbs and milk.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Menu Item 3 -->
+            <div class="col-md-3">
+                <div class="card shadow food-card h-100">
+                    <img src="/static/images/dosa.png" class="card-img-top p-3" alt="Dosa">
+                    <div class="card-body">
+                        <h5 class="card-title d-flex justify-content-between align-items-center">
+                            <span><i class="fa fa-bread-slice text-primary"></i> Dosa</span>
+                            <span class="badge bg-warning text-dark">₹100</span>
+                        </h5>
+                        <p class="card-text">Crispy dosa served with flavorful chutney and sambar.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Menu Item 4 -->
+            <div class="col-md-3">
+                <div class="card shadow food-card h-100">
+                    <img src="/static/images/idli.png" class="card-img-top p-3" alt="Idli">
+                    <div class="card-body">
+                        <h5 class="card-title d-flex justify-content-between align-items-center">
+                            <span><i class="fa fa-dot-circle text-info"></i> Idli</span>
+                            <span class="badge bg-warning text-dark">₹60</span>
+                        </h5>
+                        <p class="card-text">Soft, fluffy and steamed rice cakes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="{{ url_for('menu') }}" class="btn btn-primary mt-4">Go to Menu</a>
+    </div>
+</div>
+    <!-- About Us Section -->
+<div id="about" class="container py-5 text-center">
+    <h5 class="section-title">About Us</h5>
+    <h1 class="mb-3">Welcome To Chai'osa Restaurant</h1>
+    <p class="lead">Serving delicious food for over <span class="fw-bold text-primary">5 years</span> with a team of <span class="fw-bold text-primary">10 master chefs</span> dedicated to quality and taste.</p>
+    <div class="row my-4 justify-content-center">
+        <!-- Experience -->
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm about-card h-100">
+                <div class="card-body text-center">
+                    <i class="fa fa-award fa-2x text-warning mb-2"></i>
+                    <h2 class="text-primary">5</h2>
+                    <p>Years of Experience</p>
+                </div>
+            </div>
+        </div>
+        <!-- Master Chefs -->
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm about-card h-100">
+                <div class="card-body text-center">
+                    <i class="fa fa-user-tie fa-2x text-success mb-2"></i>
+                    <h2 class="text-primary">10</h2>
+                    <p>Master Chefs</p>
+                </div>
+            </div>
+        </div>
+        <!-- Happy Customers -->
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm about-card h-100">
+                <div class="card-body text-center">
+                    <i class="fa fa-smile fa-2x text-info mb-2"></i>
+                    <h2 class="text-primary">1K+</h2>
+                    <p>Happy Customers</p>
+                </div>
+            </div>
+        </div>
+        <!-- Dishes Served -->
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm about-card h-100">
+                <div class="card-body text-center">
+                    <i class="fa fa-utensils fa-2x text-danger mb-2"></i>
+                    <h2 class="text-primary">100+</h2>
+                    <p>Delicious Dishes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+   
+    </div>
+    <div id="contact"class="container-fluid bg-dark text-light py-5">
+        <div class="container text-center">
+          <div class="row g-4">
+            <div class="col-md-3">
+              <h4 class="text-primary">Company</h4>
+              <a href="#" class="d-block text-light">About Us</a>
+              <a href="#" class="d-block text-light">Contact Us</a>
+              <a href="#" class="d-block text-light">Privacy Policy</a>
+            </div>
+      
+            <div class="col-md-3">
+              <h4 class="text-primary">Contact</h4>
+              <p><i class="fa fa-map-marker-alt"></i> 123 Street, Chennai</p>
+              <p><i class="fa fa-phone-alt"></i> +012 345 6789</p>
+              <p><i class="fa fa-envelope"></i> chaiosa@gmail.com</p>
+            </div>
+      
+            <div class="col-md-3">
+              <h4 class="text-primary">Hours</h4>
+              <p>Mon-Sat: 09AM - 09PM</p>
+              <p>Sunday: 10AM - 08PM</p>
+            </div>
+      
+           
+          </div>
+          <hr class="bg-light my-4">
+          <p>&copy; 2025 Chai'osa. All Rights Reserved.</p>
+        </div>
+      </div>
+    
+
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+</body>
+</html>

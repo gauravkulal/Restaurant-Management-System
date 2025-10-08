@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .confirmation-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            text-align: center;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #444;
+            margin-bottom: 15px;
+        }
+
+        #order-id {
+            color: #ff6600;
+            font-weight: bold;
+        }
+
+        .order-details {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo img {
+            height: 80px;
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmation-container">
+        <div class="logo">
+            <img src="../static/images/chai_osa.png" alt="Restaurant Logo" />
+        </div>
+        
+        <h1>Thank You for Your Order!</h1>
+        <p>Your order has been received and is being processed.</p>
+        <p>Order ID: <strong id="order-id">{{ order_id }}</strong></p>
+        
+        <div class="order-details" id="order-summary">
+            <!-- Order details will be shown here if available -->
+        </div>
+        
+        <p>You will receive an email confirmation shortly.</p>
+        <a href="/index" class="btn">Return to Home</a>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get order ID from URL or from the template
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('orderId') || document.getElementById('order-id').innerText;
+            
+            // Set order ID in the page
+            document.getElementById('order-id').innerText = orderId;
+            
+            // Get the last order details if available
+            const lastOrderData = localStorage.getItem('last_order_data');
+            const orderSummary = document.getElementById('order-summary');
+            
+            if (lastOrderData) {
+                const orderData = JSON.parse(lastOrderData);
+                orderSummary.innerHTML = `
+                    <h3 style="margin-top: 0;">Order Summary</h3>
+                    <p><strong>Total Amount:</strong> ₹${orderData.total_amount}</p>
+                    <p><strong>Delivery Option:</strong> ${orderData.delivery_option === 'express' ? 'Express Delivery' : 'Standard Delivery'}</p>
+                    <p><strong>Payment Method:</strong> ${orderData.payment_method.charAt(0).toUpperCase() + orderData.payment_method.slice(1)}</p>
+                `;
+            } else {
+                orderSummary.style.display = 'none';
+            }
+            
+            // Clear the cart data now that we're on the confirmation page
+            localStorage.removeItem('cart');
+            
+            // Optional: Store this order in order history
+            const orderHistory = JSON.parse(localStorage.getItem('order_history') || '[]');
+            orderHistory.push({
+                orderId: orderId,
+                date: new Date().toISOString(),
+                total: lastOrderData ? JSON.parse(lastOrderData).total_amount : 'N/A'
+            });
+            localStorage.setItem('order_history', JSON.stringify(orderHistory));
+        });
+    </script>
+</body>
+</html>
