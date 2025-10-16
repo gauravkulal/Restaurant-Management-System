@@ -16,7 +16,7 @@ def get_db_connection():
         connection = mysql.connector.connect(
             host='localhost',
             user='root',
-            password='password',  # Replace with your MySQL password
+            password='password',
             database='restaurant_management'
         )
         return connection
@@ -149,7 +149,7 @@ def snacks():
     return render_template('snacks.html')
 
 @app.route('/beverages')
-def beverages():
+def beverages(): 
     return render_template('beverages.html')
 
 # Cart routes
