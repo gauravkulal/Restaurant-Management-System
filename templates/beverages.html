@@ -3,418 +3,794 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beverages Menu</title>
+    <title>Beverages Menu - Chai'osa</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    
     <style>
-         body {
-            font-family: Arial, sans-serif;
+        :root {
+            --primary-color: #C9A875;
+            --secondary-color: #1a1a1a;
+            --accent-color: #B8956A;
+            --text-dark: #e8e8e8;
+            --text-light: #a0a0a0;
+            --bg-dark: #0f0f0f;
+            --bg-card: #1a1a1a;
+            --bg-hover: #252525;
+            --success-green: #28a745;
+        }
+
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-dark);
+            min-height: 100vh;
             padding: 20px;
-            background-image: url("../static/images/3.png");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(201, 168, 117, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(184, 149, 106, 0.03) 0%, transparent 50%);
         }
-        .menu-container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        .menu-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        .menu-item:last-child {
-            border-bottom: none;
-        }
-        .menu-item img {
-            width: 80px;
-            height: 80px;
-            border-radius: 10px;
-            object-fit: cover;
-        }
-        .menu-details {
-            flex: 1;
-            margin-left: 15px;
-        }
-        .menu-title {
-            font-size: 16px;
-            font-weight: bold;
-        }
-        .menu-price {
-            color: green;
-            font-weight: bold;
-        }
-        .add-btn {
-            background-color: #28a745;
-            color: white;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .add-btn:hover {
-            background-color: #218838;
-        }
-        .quantity-selector {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 88px;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        .quantity-btn {
-            background-color: #28a745;
-            color: white;
-            width: 28px;
-            height: 28px;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .quantity-btn:hover {
-            background-color: #218838;
-        }
-        .quantity {
-            min-width: 30px;
+
+        .header {
             text-align: center;
-            font-weight: bold;
+            margin-bottom: 3rem;
+            padding-top: 2rem;
         }
-        .button-group {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 20px rgba(201, 168, 117, 0.3);
         }
-        .back-btn, .cart-btn {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 150px;
-            white-space: nowrap;
+
+        .header p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            font-weight: 300;
         }
-        .back-btn:hover, .cart-btn:hover {
-            background-color: #218838;
-        }
+
         .cart-badge {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #28a745;
-            color: white;
-            width: 24px;
-            height: 24px;
+            top: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: #fff;
+            min-width: 45px;
+            height: 45px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            font-weight: bold;
+            font-size: 1.1rem;
+            font-weight: 700;
+            box-shadow: 0 4px 20px rgba(201, 168, 117, 0.4);
             opacity: 0;
-            transition: opacity 0.3s;
+            transform: scale(0);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            cursor: pointer;
         }
+
         .cart-badge.show {
             opacity: 1;
+            transform: scale(1);
         }
+
+        .cart-badge:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(201, 168, 117, 0.6);
+        }
+
+        .cart-badge::before {
+            content: '\f07a';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
         #notification {
             position: fixed;
-            top: 60px;
-            right: 20px;
-            background-color: #28a745;
+            top: 90px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
             color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             z-index: 1000;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+
         #notification.show {
             transform: translateX(0);
         }
+
+        #notification i {
+            font-size: 1.2rem;
+        }
+
+        .menu-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            padding: 0 20px 100px;
+        }
+
+        .menu-item {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid rgba(201, 168, 117, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            border-color: var(--primary-color);
+            background: var(--bg-hover);
+        }
+
+        .menu-item:hover::before {
+            transform: scaleX(1);
+        }
+
+        .menu-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(201, 168, 117, 0.15), rgba(184, 149, 106, 0.1));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .menu-item:hover .menu-icon {
+            background: linear-gradient(135deg, rgba(201, 168, 117, 0.25), rgba(184, 149, 106, 0.15));
+            transform: scale(1.1);
+        }
+
+        .menu-icon i {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+
+        .menu-details {
+            flex: 1;
+            margin-bottom: 1rem;
+        }
+
+        .menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.8rem;
+        }
+
+        .menu-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            line-height: 1.3;
+        }
+
+        .menu-price {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.3rem;
+            white-space: nowrap;
+            margin-left: 10px;
+        }
+
+        .menu-description {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .button-container {
+            margin-top: auto;
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: #fff;
+            padding: 12px 0;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(201, 168, 117, 0.3);
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(201, 168, 117, 0.5);
+        }
+
+        .add-btn:active {
+            transform: translateY(0);
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-hover);
+            border-radius: 12px;
+            padding: 8px;
+            border: 1px solid rgba(201, 168, 117, 0.2);
+        }
+
+        .quantity-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-weight: 700;
+        }
+
+        .quantity-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(201, 168, 117, 0.4);
+        }
+
+        .quantity-btn:active {
+            transform: scale(0.95);
+        }
+
+        .quantity {
+            min-width: 50px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+        }
+
+        .button-group {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.5);
+            border-top: 1px solid rgba(201, 168, 117, 0.1);
+            z-index: 100;
+        }
+
+        .back-btn, .cart-btn {
+            background: var(--bg-card);
+            color: var(--text-dark);
+            padding: 15px 40px;
+            font-size: 1rem;
+            border: 1px solid rgba(201, 168, 117, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background: var(--bg-hover);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .cart-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: #fff;
+            border: none;
+        }
+
+        .cart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(201, 168, 117, 0.5);
+        }
+
+        /* Category Icons */
+        .icon-coffee::before { content: '\f0f4'; font-family: 'Font Awesome 5 Free'; font-weight: 900; }
+        .icon-tea::before { content: '\f7ab'; font-family: 'Font Awesome 5 Free'; font-weight: 900; }
+        .icon-juice::before { content: '\f5d3'; font-family: 'Font Awesome 5 Free'; font-weight: 900; }
+        .icon-shake::before { content: '\f7a0'; font-family: 'Font Awesome 5 Free'; font-weight: 900; }
+        .icon-smoothie::before { content: '\f810'; font-family: 'Font Awesome 5 Free'; font-weight: 900; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .menu-container {
+                grid-template-columns: 1fr;
+                padding: 0 10px 100px;
+            }
+
+            .cart-badge {
+                top: 20px;
+                right: 20px;
+                min-width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            #notification {
+                top: 75px;
+                right: 20px;
+                left: 20px;
+                width: auto;
+            }
+
+            .button-group {
+                flex-direction: column;
+                gap: 10px;
+                padding: 15px;
+            }
+
+            .back-btn, .cart-btn {
+                width: 100%;
+                padding: 12px 30px;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .menu-item {
+            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .menu-item:nth-child(1) { animation-delay: 0.1s; }
+        .menu-item:nth-child(2) { animation-delay: 0.15s; }
+        .menu-item:nth-child(3) { animation-delay: 0.2s; }
+        .menu-item:nth-child(4) { animation-delay: 0.25s; }
+        .menu-item:nth-child(5) { animation-delay: 0.3s; }
+        .menu-item:nth-child(6) { animation-delay: 0.35s; }
     </style>
 </head>
 <body>
-    <h1 style="text-align:center;">Beverages Menu</h1>
+    <div class="header">
+        <h1><i class="fas fa-mug-hot"></i> Beverages Menu</h1>
+        <p>Refresh yourself with our premium selection of beverages</p>
+    </div>
     
-    <div class="cart-badge" id="cart-badge">0</div>
+    <div class="cart-badge" id="cart-badge" onclick="window.location.href='/cart'">0</div>
     
-    <div id="notification">Item added to cart!</div>
+    <div id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span>Item added to cart!</span>
+    </div>
+
     <div class="menu-container">
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-coffee"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Coffee</div>
-                <div class="menu-price">₹30</div>
-                <p>Aromatic and freshly brewed coffee to energize your day.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Coffee</div>
+                    <div class="menu-price">₹30</div>
+                </div>
+                <p class="menu-description">Aromatic and freshly brewed coffee to energize your day.</p>
             </div>
             <div class="button-container" id="button-container-1">
-                <button class="add-btn" onclick="addToCart(1,'Coffee',30)">Add</button>
+                <button class="add-btn" onclick="addToCart(1,'Coffee',30)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-mug-hot"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Black coffee</div>
-                <div class="menu-price">₹60</div>
-                <p>Strong and bold black coffee for coffee lovers.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Black Coffee</div>
+                    <div class="menu-price">₹60</div>
+                </div>
+                <p class="menu-description">Strong and bold black coffee for coffee lovers.</p>
             </div>
             <div class="button-container" id="button-container-2">
-                <button class="add-btn" onclick="addToCart(2,'Black coffee',60)">Add</button>
+                <button class="add-btn" onclick="addToCart(2,'Black coffee',60)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-coffee"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Cappuccino</div>
-                <div class="menu-price">₹90</div>
-                <p>Rich and foamy cappuccino for a perfect coffee experience.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Cappuccino</div>
+                    <div class="menu-price">₹90</div>
+                </div>
+                <p class="menu-description">Rich and foamy cappuccino for a perfect coffee experience.</p>
             </div>
             <div class="button-container" id="button-container-3">
-                <button class="add-btn" onclick="addToCart(3,'Cappuccino',90)">Add</button>
+                <button class="add-btn" onclick="addToCart(3,'Cappuccino',90)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-mug-hot"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Tea</div>
-                <div class="menu-price">₹30</div>
-                <p>Classic tea with a refreshing and soothing taste.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Tea</div>
+                    <div class="menu-price">₹30</div>
+                </div>
+                <p class="menu-description">Classic tea with a refreshing and soothing taste.</p>
             </div>
             <div class="button-container" id="button-container-4">
-                <button class="add-btn" onclick="addToCart(4,'Tea',30)">Add</button>
+                <button class="add-btn" onclick="addToCart(4,'Tea',30)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-leaf"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Green Tea</div>
-                <div class="menu-price">₹35</div>
-                <p>Healthy and calming green tea for a refreshing feel.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Green Tea</div>
+                    <div class="menu-price">₹35</div>
+                </div>
+                <p class="menu-description">Healthy and calming green tea for a refreshing feel.</p>
             </div>
             <div class="button-container" id="button-container-5">
-                <button class="add-btn" onclick="addToCart(5,'Green Tea',35)">Add</button>
+                <button class="add-btn" onclick="addToCart(5,'Green Tea',35)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-glass-whiskey"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Iced tea</div>
-                <div class="menu-price">₹60</div>
-                <p>Cool and refreshing iced tea with a hint of lemon.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Iced Tea</div>
+                    <div class="menu-price">₹60</div>
+                </div>
+                <p class="menu-description">Cool and refreshing iced tea with a hint of lemon.</p>
             </div>
             <div class="button-container" id="button-container-6">
-                <button class="add-btn" onclick="addToCart(6,'Iced tea',60)">Add</button>
+                <button class="add-btn" onclick="addToCart(6,'Iced tea',60)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-lemon"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Lemonade</div>
-                <div class="menu-price">₹50</div>
-                <p>Zesty lemonade, perfect for a refreshing experience.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Lemonade</div>
+                    <div class="menu-price">₹50</div>
+                </div>
+                <p class="menu-description">Zesty lemonade, perfect for a refreshing experience.</p>
             </div>
             <div class="button-container" id="button-container-7">
-                <button class="add-btn" onclick="addToCart(7,'Lemonade',50)">Add</button>
+                <button class="add-btn" onclick="addToCart(7,'Lemonade',50)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-glass-martini"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Orange Juice</div>
-                <div class="menu-price">₹80</div>
-                <p>Freshly squeezed orange juice, rich in vitamin C.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Orange Juice</div>
+                    <div class="menu-price">₹80</div>
+                </div>
+                <p class="menu-description">Freshly squeezed orange juice, rich in vitamin C.</p>
             </div>
             <div class="button-container" id="button-container-8">
-                <button class="add-btn" onclick="addToCart(8,'Orange Juice',80)">Add</button>
+                <button class="add-btn" onclick="addToCart(8,'Orange Juice',80)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-seedling"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Sugarcane juice</div>
-                <div class="menu-price">₹60</div>
-                <p>Natural sugarcane juice, sweet and refreshing.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Sugarcane Juice</div>
+                    <div class="menu-price">₹60</div>
+                </div>
+                <p class="menu-description">Natural sugarcane juice, sweet and refreshing.</p>
             </div>
             <div class="button-container" id="button-container-9">
-                <button class="add-btn" onclick="addToCart(9,'Sugarcane juice',60)">Add</button>
+                <button class="add-btn" onclick="addToCart(9,'Sugarcane juice',60)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-apple-alt"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Berry Juice</div>
-                <div class="menu-price">₹60</div>
-                <p>Fresh mixed berry juice, packed with antioxidants.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Berry Juice</div>
+                    <div class="menu-price">₹60</div>
+                </div>
+                <p class="menu-description">Fresh mixed berry juice, packed with antioxidants.</p>
             </div>
             <div class="button-container" id="button-container-10">
-                <button class="add-btn" onclick="addToCart(10,'Berry Juice',60)">Add</button>
+                <button class="add-btn" onclick="addToCart(10,'Berry Juice',60)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-glass-martini-alt"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Pineapple Juice</div>
-                <div class="menu-price">₹80</div>
-                <p>Sweet and tangy pineapple juice, full of tropical flavors.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Pineapple Juice</div>
+                    <div class="menu-price">₹80</div>
+                </div>
+                <p class="menu-description">Sweet and tangy pineapple juice, full of tropical flavors.</p>
             </div>
             <div class="button-container" id="button-container-11">
-                <button class="add-btn" onclick="addToCart(11,'Pineapple Juice',80)">Add</button>
+                <button class="add-btn" onclick="addToCart(11,'Pineapple Juice',80)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-blender"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Pomegranate shake</div>
-                <div class="menu-price">₹100</div>
-                <p>Healthy and tasty pomegranate shake with a refreshing kick.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Pomegranate Shake</div>
+                    <div class="menu-price">₹100</div>
+                </div>
+                <p class="menu-description">Healthy and tasty pomegranate shake with a refreshing kick.</p>
             </div>
             <div class="button-container" id="button-container-12">
-                <button class="add-btn" onclick="addToCart(12,'Pomegranate shake',100)">Add</button>
+                <button class="add-btn" onclick="addToCart(12,'Pomegranate shake',100)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-wine-glass"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Grape juice</div>
-                <div class="menu-price">₹80</div>
-                <p>Sweet and tangy grape juice, full of natural goodness.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Grape Juice</div>
+                    <div class="menu-price">₹80</div>
+                </div>
+                <p class="menu-description">Sweet and tangy grape juice, full of natural goodness.</p>
             </div>
             <div class="button-container" id="button-container-13">
-                <button class="add-btn" onclick="addToCart(13,'Grape juice',80)">Add</button>
+                <button class="add-btn" onclick="addToCart(13,'Grape juice',80)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-glass-martini"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Watermelon Juice</div>
-                <div class="menu-price">₹80</div>
-                <p>Refreshing watermelon juice, perfect for summer days.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Watermelon Juice</div>
+                    <div class="menu-price">₹80</div>
+                </div>
+                <p class="menu-description">Refreshing watermelon juice, perfect for summer days.</p>
             </div>
             <div class="button-container" id="button-container-14">
-                <button class="add-btn" onclick="addToCart(14,'Watermelon Juice',80)">Add</button>
+                <button class="add-btn" onclick="addToCart(14,'Watermelon Juice',80)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-mug-hot"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Hot Chocolate</div>
-                <div class="menu-price">₹130</div>
-                <p>Rich and creamy hot chocolate to warm your soul.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Hot Chocolate</div>
+                    <div class="menu-price">₹130</div>
+                </div>
+                <p class="menu-description">Rich and creamy hot chocolate to warm your soul.</p>
             </div>
             <div class="button-container" id="button-container-15">
-                <button class="add-btn" onclick="addToCart(15,'Hot Chocolate',130)">Add</button>
+                <button class="add-btn" onclick="addToCart(15,'Hot Chocolate',130)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-cookie-bite"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Hazelnut hot chocolate</div>
-                <div class="menu-price">₹150</div>
-                <p>Creamy hazelnut-infused hot chocolate for a delightful treat.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Hazelnut Hot Chocolate</div>
+                    <div class="menu-price">₹150</div>
+                </div>
+                <p class="menu-description">Creamy hazelnut-infused hot chocolate for a delightful treat.</p>
             </div>
             <div class="button-container" id="button-container-16">
-                <button class="add-btn" onclick="addToCart(16,'Hazelnut hot chocolate',150)">Add</button>
+                <button class="add-btn" onclick="addToCart(16,'Hazelnut hot chocolate',150)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-snowflake"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Iced Coffee</div>
-                <div class="menu-price">₹60</div>
-                <p>Chilled iced coffee to cool you down on a hot day.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Iced Coffee</div>
+                    <div class="menu-price">₹60</div>
+                </div>
+                <p class="menu-description">Chilled iced coffee to cool you down on a hot day.</p>
             </div>
             <div class="button-container" id="button-container-17">
-                <button class="add-btn" onclick="addToCart(17,'Iced Coffee',60)">Add</button>
+                <button class="add-btn" onclick="addToCart(17,'Iced Coffee',60)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-ice-cream"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Caramel cold coffee</div>
-                <div class="menu-price">₹180</div>
-                <p>Sweet caramel cold coffee for a rich, smooth taste.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Caramel Cold Coffee</div>
+                    <div class="menu-price">₹180</div>
+                </div>
+                <p class="menu-description">Sweet caramel cold coffee for a rich, smooth taste.</p>
             </div>
             <div class="button-container" id="button-container-18">
-                <button class="add-btn" onclick="addToCart(18,'Caramel cold coffee',180)">Add</button>
+                <button class="add-btn" onclick="addToCart(18,'Caramel cold coffee',180)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-cookie"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Lotus biscoff coffee</div>
-                <div class="menu-price">₹165</div>
-                <p>Indulgent Lotus Biscoff coffee with a caramelized twist.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Lotus Biscoff Coffee</div>
+                    <div class="menu-price">₹165</div>
+                </div>
+                <p class="menu-description">Indulgent Lotus Biscoff coffee with a caramelized twist.</p>
             </div>
             <div class="button-container" id="button-container-19">
-                <button class="add-btn" onclick="addToCart(19,'Lotus biscoff coffee',165)">Add</button>
+                <button class="add-btn" onclick="addToCart(19,'Lotus biscoff coffee',165)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-cookie-bite"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Oreo milkshake</div>
-                <div class="menu-price">₹180</div>
-                <p>Thick and creamy Oreo milkshake with a chocolatey crunch.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Oreo Milkshake</div>
+                    <div class="menu-price">₹180</div>
+                </div>
+                <p class="menu-description">Thick and creamy Oreo milkshake with a chocolatey crunch.</p>
             </div>
             <div class="button-container" id="button-container-20">
-                <button class="add-btn" onclick="addToCart(20,'Oreo milkshake',180)">Add</button>
+                <button class="add-btn" onclick="addToCart(20,'Oreo milkshake',180)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-glass-martini-alt"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Chocolate Devil Shake</div>
-                <div class="menu-price">₹175</div>
-                <p>Decadent chocolate shake for an indulgent experience.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Chocolate Devil Shake</div>
+                    <div class="menu-price">₹175</div>
+                </div>
+                <p class="menu-description">Decadent chocolate shake for an indulgent experience.</p>
             </div>
             <div class="button-container" id="button-container-21">
-                <button class="add-btn" onclick="addToCart(21,'Chocolate Devil Shake',175)">Add</button>
+                <button class="add-btn" onclick="addToCart(21,'Chocolate Devil Shake',175)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-birthday-cake"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Brownie Milkshake</div>
-                <div class="menu-price">₹170</div>
-                <p>Delicious brownie-infused milkshake for chocolate lovers.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Brownie Milkshake</div>
+                    <div class="menu-price">₹170</div>
+                </div>
+                <p class="menu-description">Delicious brownie-infused milkshake for chocolate lovers.</p>
             </div>
             <div class="button-container" id="button-container-22">
-                <button class="add-btn" onclick="addToCart(22,'Brownie Milkshake',170)">Add</button>
+                <button class="add-btn" onclick="addToCart(22,'Brownie Milkshake',170)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-glass-whiskey"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Mango Lassi</div>
-                <div class="menu-price">₹90</div>
-                <p>Thick and creamy mango lassi with a traditional touch.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Mango Lassi</div>
+                    <div class="menu-price">₹90</div>
+                </div>
+                <p class="menu-description">Thick and creamy mango lassi with a traditional touch.</p>
             </div>
             <div class="button-container" id="button-container-23">
-                <button class="add-btn" onclick="addToCart(23,'Mango Lassi',90)">Add</button>
+                <button class="add-btn" onclick="addToCart(23,'Mango Lassi',90)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-blender"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Mango smoothie</div>
-                <div class="menu-price">₹85</div>
-                <p>Delicious mango smoothie with a creamy texture.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Mango Smoothie</div>
+                    <div class="menu-price">₹85</div>
+                </div>
+                <p class="menu-description">Delicious mango smoothie with a creamy texture.</p>
             </div>
             <div class="button-container" id="button-container-24">
-                <button class="add-btn" onclick="addToCart(24,'Mango smoothie',85)">Add</button>
+                <button class="add-btn" onclick="addToCart(24,'Mango smoothie',85)">Add to Cart</button>
             </div>
         </div>
+
         <div class="menu-item">
+            <div class="menu-icon"><i class="fas fa-pepper-hot"></i></div>
             <div class="menu-details">
-                <div class="menu-title">Strawberry Smoothie</div>
-                <div class="menu-price">₹85</div>
-                <p>Creamy strawberry smoothie with a fruity burst.</p>  
+                <div class="menu-header">
+                    <div class="menu-title">Strawberry Smoothie</div>
+                    <div class="menu-price">₹85</div>
+                </div>
+                <p class="menu-description">Creamy strawberry smoothie with a fruity burst.</p>
             </div>
             <div class="button-container" id="button-container-25">
-                <button class="add-btn" onclick="addToCart(25,'Strawberry Smoothie',85)">Add</button>
+                <button class="add-btn" onclick="addToCart(25,'Strawberry Smoothie',85)">Add to Cart</button>
             </div>
         </div>
-        <div class="button-group">
-            <a href="/menu">
-                <button class="back-btn">Back</button>
-            </a>
-            <a href="/cart">
-                <button class="cart-btn">Go to Cart</button>
-            </a>
-        </div>
     </div>
+
+    <div class="button-group">
+        <a href="/menu" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Menu
+        </a>
+        <a href="/cart" class="cart-btn">
+            <i class="fas fa-shopping-cart"></i> View Cart
+        </a>
     </div>
-    
 
     <script>
 // Load cart from localStorage
@@ -458,14 +834,14 @@ function updateButtonUI(itemId, itemName, itemPrice) {
     if (quantity > 0) {
         buttonContainer.innerHTML = `
             <div class="quantity-selector">
-                <button class="quantity-btn" onclick="decreaseQuantity(${itemId}, '${itemName}', ${itemPrice})">-</button>
+                <button class="quantity-btn" onclick="decreaseQuantity(${itemId}, '${itemName}', ${itemPrice})">−</button>
                 <span class="quantity" id="quantity-${itemId}">${quantity}</span>
                 <button class="quantity-btn" onclick="increaseQuantity(${itemId}, '${itemName}', ${itemPrice})">+</button>
             </div>
         `;
     } else {
         buttonContainer.innerHTML = `
-            <button class="add-btn" onclick="addToCart(${itemId}, '${itemName}', ${itemPrice})">Add</button>
+            <button class="add-btn" onclick="addToCart(${itemId}, '${itemName}', ${itemPrice})">Add to Cart</button>
         `;
     }
 }
@@ -505,7 +881,7 @@ function decreaseQuantity(itemId, itemName, itemPrice) {
             const buttonContainer = document.getElementById(`button-container-${itemId}`);
             if (buttonContainer) {
                 buttonContainer.innerHTML = `
-                    <button class="add-btn" onclick="addToCart(${itemId}, '${itemName}', ${itemPrice})">Add</button>
+                    <button class="add-btn" onclick="addToCart(${itemId}, '${itemName}', ${itemPrice})">Add to Cart</button>
                 `;
             }
         } else {
@@ -546,13 +922,16 @@ function updateCartBadge() {
 // Function to show notification
 function showNotification(itemName) {
     const notification = document.getElementById('notification');
-    notification.textContent = `${itemName} added to cart!`;
+    notification.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>${itemName} added to cart!</span>
+    `;
     notification.classList.add('show');
     
-    // Hide notification after 2 seconds
+    // Hide notification after 2.5 seconds
     setTimeout(() => {
         notification.classList.remove('show');
-    }, 2000);
+    }, 2500);
 }
 
 // Initialize UI when page loads
