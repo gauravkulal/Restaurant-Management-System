@@ -3,152 +3,303 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Indian Non-Veg Starters</title>
+    <title>Non-Veg Menu - Restaurant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;800&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
-            padding: 20px;
-            background-image: url("images/3.png");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .menu-container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
-            padding: 20px;
+
+        :root {
+            --primary-color: #C9A875;
+            --accent-color: #B8956A;
+            --text-dark: #e8e8e8;
+            --text-light: #a0a0a0;
+            --bg-dark: #0f0f0f;
+            --bg-card: #1a1a1a;
+            --bg-hover: #252525;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 15px 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border: 1px solid rgba(201, 168, 117, 0.1);
+        }
+
+        .nav-btn, .cart-btn {
+            padding: 10px 20px;
+            border: none;
             border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            cursor: pointer;
+            background: var(--bg-hover);
+            color: var(--text-dark);
         }
+
+        .nav-btn:hover {
+            background: var(--primary-color);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .cart-btn {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        .cart-btn:hover {
+            background: var(--accent-color);
+        }
+
+        /* Menu Container */
+        .menu-container {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(201, 168, 117, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .menu-container h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(201, 168, 117, 0.2);
+        }
+
+        .menu-container h2:first-child {
+            margin-top: 0;
+        }
+
+        /* Menu Item */
         .menu-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
+            padding: 20px;
+            border-bottom: 1px solid rgba(201, 168, 117, 0.1);
+            transition: background 0.3s ease;
         }
+
         .menu-item:last-child {
             border-bottom: none;
         }
-        .menu-item img {
-            width: 80px;
-            height: 80px;
+
+        .menu-item:hover {
+            background: var(--bg-hover);
             border-radius: 10px;
-            object-fit: cover;
         }
+
         .menu-details {
             flex: 1;
-            margin-left: 15px;
         }
+
         .menu-title {
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 5px;
         }
+
         .menu-price {
-            color: green;
-            font-weight: bold;
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
         }
+
+        .menu-item p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Buttons */
         .add-btn {
-            background-color: #28a745;
+            background: var(--primary-color);
             color: white;
-            padding: 5px 10px;
+            padding: 10px 25px;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(201, 168, 117, 0.3);
         }
+
         .add-btn:hover {
-            background-color: #218838;
+            background: var(--accent-color);
+            transform: translateY(-2px);
         }
+
         .quantity-selector {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            width: 88px;
-            border-radius: 5px;
-            overflow: hidden;
+            gap: 15px;
+            background: rgba(201, 168, 117, 0.1);
+            padding: 8px 15px;
+            border-radius: 10px;
         }
+
         .quantity-btn {
-            background-color: #28a745;
+            background: var(--primary-color);
             color: white;
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border: none;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
         }
+
         .quantity-btn:hover {
-            background-color: #218838;
+            background: var(--accent-color);
+            transform: scale(1.1);
         }
+
         .quantity {
             min-width: 30px;
             text-align: center;
-            font-weight: bold;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-dark);
         }
-        .button-group {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .back-btn, .cart-btn {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 150px;
-            white-space: nowrap;
-        }
-        .back-btn:hover, .cart-btn:hover {
-            background-color: #218838;
-        }
+
+        /* Cart Badge */
         .cart-badge {
             position: fixed;
             top: 20px;
             right: 20px;
-            background-color: #28a745;
+            background: var(--primary-color);
             color: white;
-            width: 24px;
-            height: 24px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
             opacity: 0;
             transition: opacity 0.3s;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(201, 168, 117, 0.4);
         }
+
         .cart-badge.show {
             opacity: 1;
         }
+
+        /* Notification */
         #notification {
             position: fixed;
-            top: 60px;
+            top: 80px;
             right: 20px;
-            background-color: #28a745;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
             color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transform: translateX(100%);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transform: translateX(400px);
             transition: transform 0.3s ease;
             z-index: 1000;
+            font-weight: 600;
         }
+
         #notification.show {
             transform: translateX(0);
         }
-    </style>
 
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .menu-container {
+                padding: 20px;
+            }
+
+            .menu-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .nav-bar {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- Cart Badge -->
+    <div class="cart-badge" id="cart-badge">0</div>
+    
+    <!-- Notification -->
+    <div id="notification">Item added to cart!</div>
+
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>🍗 Non-Veg Menu</h1>
+        </div>
+
+        <!-- Navigation Bar -->
+        <div class="nav-bar">
+            <a href="/menu" class="nav-btn">← Back to Menu</a>
+            <a href="/cart" class="cart-btn">🛒 View Cart</a>
+        </div>
+
     <div class="menu-container">
         <h2>Non-Veg Starters</h2>
         <div class="menu-item">
@@ -157,8 +308,9 @@
                 <div class="menu-price">₹250</div>
                 <p>Delicious spicy Chicken biriyani</p>
             </div>
-           
-            <button class="add-btn" onclick="addToCart(1, 'Chicken 65', 250)">ADD</button>
+            <div id="button-container-101">
+                <button class="add-btn" data-item-id="101" onclick="addToCart(101, 'Chicken 65', 250)">ADD</button>
+            </div>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -167,7 +319,7 @@
                 <p>Juicy minced mutton mixed with aromatic spices, skewered, and grilled over charcoal for a smoky flavor.</p>
             </div>
           
-            <button class="add-btn" onclick="addToCart(2, 'Mutton Seekh Kebab', 300)">ADD</button>
+            <button class="add-btn" onclick="addToCart(102, 'Mutton Seekh Kebab', 300)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -176,7 +328,7 @@
                 <p>Classic North Indian dish of chicken marinated in yogurt and spices, roasted in a traditional tandoor for a smoky, juicy taste.</p>
             </div>
             
-            <button class="add-btn" onclick="addToCart(3, 'Tandoori Chicken', 350)">ADD</button>
+            <button class="add-btn" onclick="addToCart(103, 'Tandoori Chicken', 350)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -185,7 +337,7 @@
             
             <p> Fresh fish chunks marinated in a blend of yogurt and spices, grilled to a perfect smoky tenderness.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(4, 'Fish Tikka', 200)">ADD</button>
+            <button class="add-btn" onclick="addToCart(104, 'Fish Tikka', 200)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -194,7 +346,7 @@
                 <p>Succulent prawns tossed in a spicy masala mix and fried for a crispy yet juicy bite.</p>
             </div>
             
-            <button class="add-btn" onclick="addToCart(5, 'Prawn Masala Fry', 320)">ADD</button>
+            <button class="add-btn" onclick="addToCart(105, 'Prawn Masala Fry', 320)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -203,7 +355,7 @@
                 <p>Indo-Chinese delight with crispy fried fish coated in a tangy and spicy chili sauce.</p>
             </div>
            
-            <button class="add-btn" onclick="addToCart(6, 'Chilli Fish Dry', 320)">ADD</button>
+            <button class="add-btn" onclick="addToCart(106, 'Chilli Fish Dry', 320)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -212,7 +364,7 @@
                 <p> Deep-fried fish coated with a spicy masala mix, offering a crispy and flavorful treat.</p>
             </div>
           
-            <button class="add-btn" onclick="addToCart(7, 'Fish 65', 320)">ADD</button>
+            <button class="add-btn" onclick="addToCart(107, 'Fish 65', 320)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -221,7 +373,7 @@
                 <p>A unique and delicious seafood starter featuring crab meat shaped like a lollipop and fried to perfection.</p>
             </div>
             
-            <button class="add-btn" onclick="addToCart(8, 'Crab Lollipop', 280)">ADD</button>
+            <button class="add-btn" onclick="addToCart(108, 'Crab Lollipop', 280)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -230,7 +382,7 @@
                 <p>A crunchy appetizer made with marinated chicken drumettes, fried and tossed in a spicy sauce.</p>
             </div>
            
-            <button class="add-btn" onclick="addToCart(9, 'Chicken Lollipop', 390)">ADD</button>
+            <button class="add-btn" onclick="addToCart(109, 'Chicken Lollipop', 390)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -239,7 +391,7 @@
                 <p> Indo-Chinese specialty with crispy chicken tossed in a fiery, tangy sauce with sesame and cashews.</p>
             </div>
             
-            <button class="add-btn" onclick="addToCart(10, 'Dragon Chicken', 367)">ADD</button>
+            <button class="add-btn" onclick="addToCart(110, 'Dragon Chicken', 367)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -248,7 +400,7 @@
                 <p> A crispy chicken appetizer stir-fried with chilies, garlic, and bell peppers for a spicy and flavorful experience.</p>
             </div>
            
-            <button class="add-btn" onclick="addToCart(11, 'Chilli Chicken Dry', 254)">ADD</button>
+            <button class="add-btn" onclick="addToCart(111, 'Chilli Chicken Dry', 254)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -257,7 +409,7 @@
                 <p>Juicy, spice-infused mutton pieces grilled over charcoal for a rich, smoky taste.</p>
             </div>
             
-            <button class="add-btn" onclick="addToCart(12, 'Mutton Tikka', 319)">ADD</button>
+            <button class="add-btn" onclick="addToCart(112, 'Mutton Tikka', 319)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -266,7 +418,7 @@
                 <p>Tender chicken pieces marinated with special spices and grilled until perfectly juicy.</p>
             </div>
             
-            <button class="add-btn" onclick="addToCart(13, 'Chicken Kebab', 345)">ADD</button>
+            <button class="add-btn" onclick="addToCart(113, 'Chicken Kebab', 345)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -275,7 +427,7 @@
                 <p>Fresh prawns tossed in a special spicy marinade and fried until golden.</p>
             </div>
            
-            <button class="add-btn" onclick="addToCart(14, 'Spicy Prawn Fry', 350)">ADD</button>
+            <button class="add-btn" onclick="addToCart(114, 'Spicy Prawn Fry', 350)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -284,7 +436,7 @@
                 <p>Coastal delicacy featuring prawns slow-cooked in aromatic ghee and fiery red masala.</p>
             </div>
           
-            <button class="add-btn" onclick="addToCart(15, 'Prawn Ghee Roast', 345)">ADD</button>
+            <button class="add-btn" onclick="addToCart(115, 'Prawn Ghee Roast', 345)">ADD</button>
         </div>
     </div>
 
@@ -297,7 +449,7 @@
                         <p> A hot and spicy South Indian-style pepper chicken soup, infused with aromatic spices and black pepper for a soothing, flavorful experience.</p>
                     </div>
                     
-                    <button class="add-btn" onclick="addToCart(16, 'Chicken Milagu Soup', 140)">ADD</button>
+                    <button class="add-btn" onclick="addToCart(116, 'Chicken Milagu Soup', 140)">ADD</button>
                 </div>
                 <div class="menu-item">
                     <div class="menu-details">
@@ -306,7 +458,7 @@
                         <p>A rich and spicy mutton-based soup with crushed black pepper, garlic, and traditional Indian spices, perfect for warmth and immunity.</p>
                     </div>
                    
-                    <button class="add-btn" onclick="addToCart(17, 'Mutton Milagu Soup', 150)">ADD</button>
+                    <button class="add-btn" onclick="addToCart(117, 'Mutton Milagu Soup', 150)">ADD</button>
                 </div>
                 <div class="menu-item">
                     <div class="menu-details">
@@ -315,7 +467,7 @@
                         <p>A tangy and spicy Indo-Chinese soup with shredded chicken, soy sauce, vinegar, and a mix of vegetables, offering a perfect balance of flavors.</p>
                     </div>
                    
-                    <button class="add-btn" onclick="addToCart(18, 'Hot And Sour Chicken Soup', 185)">ADD</button>
+                    <button class="add-btn" onclick="addToCart(118, 'Hot And Sour Chicken Soup', 185)">ADD</button>
                 </div>
                 <div class="menu-item">
                     <div class="menu-details">
@@ -324,7 +476,7 @@
                         <p> tangy and spicy Indo-Chinese soup with shredded chicken, soy sauce, vinegar, and a mix of vegetables, offering a perfect balance of flavors.</p>
                     </div>
                     
-                    <button class="add-btn" onclick="addToCart(19, 'Sweet Corn Chicken Soup', 175)">ADD</button>
+                    <button class="add-btn" onclick="addToCart(119, 'Sweet Corn Chicken Soup', 175)">ADD</button>
                 </div>
             </div>
             </div>
@@ -339,7 +491,7 @@
                 <p>A creamy, mildly spiced tomato-based curry with tender chicken pieces, rich in butter and aromatic Indian spices.</p>
                 
             </div>
-            <button class="add-btn" onclick="addToCart(20, 'Butter Chicken', 320)">ADD</button>
+            <button class="add-btn" onclick="addToCart(120, 'Butter Chicken', 320)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -348,7 +500,7 @@
                 <p>A traditional Kashmiri-style mutton curry, slow-cooked with yogurt, saffron, and a blend of flavorful spices.</p>
             </div>
          
-            <button class="add-btn" onclick="addToCart(21, 'Rogan Josh', 400)">ADD</button>
+            <button class="add-btn" onclick="addToCart(121, 'Rogan Josh', 400)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -357,7 +509,7 @@
                 <p>A spicy South Indian delicacy made with roasted spices, coconut, and succulent chicken pieces.</p>
             </div>
             
-            <button class="add-btn" onclick="addToCart(22, 'Chicken Chettinad', 380)">ADD</button>
+            <button class="add-btn" onclick="addToCart(122, 'Chicken Chettinad', 380)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -365,7 +517,7 @@
                 <div class="menu-price">₹249</div>
                 <p>A royal Mughlai dish with slow-cooked mutton in a creamy, nut-based gravy infused with rich spices.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(23, 'Mutton Korma', 249)">ADD</button>
+            <button class="add-btn" onclick="addToCart(123, 'Mutton Korma', 249)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -373,7 +525,7 @@
                 <div class="menu-price">₹210</div>
                 <p>A tangy and mildly spiced fish curry cooked with tamarind, coconut, and traditional Indian flavors.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(24, 'Fish Curry', 210)">ADD</button>
+            <button class="add-btn" onclick="addToCart(124, 'Fish Curry', 210)">ADD</button>
         </div>
     </div>
             
@@ -387,7 +539,7 @@
                 <div class="menu-price">₹270</div>
                 <p> Fragrant basmati rice cooked with marinated chicken, aromatic spices, and saffron, served with raita.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(25, 'Chicken Biriyani', 270)">ADD</button>
+            <button class="add-btn" onclick="addToCart(125, 'Chicken Biriyani', 270)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -395,7 +547,7 @@
                 <div class="menu-price">₹210</div>
                 <p>A seafood delight made with flavorful fish, aromatic rice, and a blend of traditional spices.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(26, 'Fish Biriyani', 210)">ADD</button>
+            <button class="add-btn" onclick="addToCart(126, 'Fish Biriyani', 210)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -403,7 +555,7 @@
                 <div class="menu-price">₹290</div>
                 <p>A slow-cooked, flavorful biryani with tender mutton and perfectly seasoned basmati rice.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(27, 'Mutton Biriyani', 290)">ADD</button>
+            <button class="add-btn" onclick="addToCart(127, 'Mutton Biriyani', 290)">ADD</button>
         </div>
 
         <div class="menu-item">
@@ -412,7 +564,7 @@
                 <div class="menu-price">₹252</div>
                 <p>A coastal favorite, featuring succulent prawns and fragrant rice, cooked with aromatic spices.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(28, 'Prawn Biriyani', 252)">ADD</button>
+            <button class="add-btn" onclick="addToCart(128, 'Prawn Biriyani', 252)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -420,7 +572,7 @@
                 <div class="menu-price">₹300</div>
                 <p>A royal Hyderabadi-style biryani with layered chicken and fragrant rice, slow-cooked in dum style.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(29, 'Hyderabadi Chicken Dum Biriyani', 300)">ADD</button>
+            <button class="add-btn" onclick="addToCart(129, 'Hyderabadi Chicken Dum Biriyani', 300)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -428,7 +580,7 @@
                 <div class="menu-price">₹280</div>
                 <p>A classic, slow-cooked biryani with tender mutton, aromatic rice, and a mix of rich spices.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(30, 'Hyderabadi Mutton Dum Biriyani', 280)">ADD</button>
+            <button class="add-btn" onclick="addToCart(130, 'Hyderabadi Mutton Dum Biriyani', 280)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -436,7 +588,7 @@
                 <div class="menu-price">₹186</div>
                 <p>A South Indian specialty biryani with marinated mutton and signature spices for a bold flavor.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(31, 'Naidu Mutton Biriyani', 186)">ADD</button>
+            <button class="add-btn" onclick="addToCart(131, 'Naidu Mutton Biriyani', 186)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -444,7 +596,7 @@
                 <div class="menu-price">₹280</div>
                 <p>A fusion biryani featuring crispy Chicken 65 pieces blended with flavorful biryani rice.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(32, 'Boneless Chicken 65 Biriyani', 280)">ADD</button>
+            <button class="add-btn" onclick="addToCart(132, 'Boneless Chicken 65 Biriyani', 280)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -452,7 +604,7 @@
                 <div class="menu-price">₹272</div>
                 <p>A Tamil Nadu special biryani with juicy mutton kola (meatballs) cooked in aromatic rice.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(33, 'Mutton Kola Biriyani', 272)">ADD</button>
+            <button class="add-btn" onclick="addToCart(133, 'Mutton Kola Biriyani', 272)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -460,7 +612,7 @@
                 <div class="menu-price">₹235</div>
                 <p>Fluffy basmati rice infused with spices and served with boiled eggs for a fulfilling meal.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(34, 'Egg Biriyani', 235)">ADD</button>
+            <button class="add-btn" onclick="addToCart(134, 'Egg Biriyani', 235)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -468,7 +620,7 @@
                 <div class="menu-price">₹180</div>
                 <p>Fragrant ghee-infused rice with boneless chicken pieces, a simple yet rich delicacy.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(35, 'Chicken Ghee Rice', 180)">ADD</button>
+            <button class="add-btn" onclick="addToCart(135, 'Chicken Ghee Rice', 180)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -476,7 +628,7 @@
                 <div class="menu-price">₹264</div>
                 <p>A spicy seafood dish with pepper-seasoned fish and aromatic ghee rice.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(36, 'Pepper Fish Ghee Rice', 264)">ADD</button>
+            <button class="add-btn" onclick="addToCart(136, 'Pepper Fish Ghee Rice', 264)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -484,7 +636,7 @@
                 <div class="menu-price">₹230</div>
                 <p> Classic fried rice tossed with eggs, vegetables, and flavorful soy-based seasoning.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(37, 'Egg Fried Rice', 230)">ADD</button>
+            <button class="add-btn" onclick="addToCart(137, 'Egg Fried Rice', 230)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -492,7 +644,7 @@
                 <div class="menu-price">₹3659</div>
                 <p>A large serving of flavorful chicken biryani, perfect for gatherings and celebrations.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(38, 'Bucket Chicken Biriyani', 3659)">ADD</button>
+            <button class="add-btn" onclick="addToCart(138, 'Bucket Chicken Biriyani', 3659)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -500,7 +652,7 @@
                 <div class="menu-price">₹3587</div>
                 <p>A grand portion of rich and aromatic mutton biryani, ideal for sharing.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(39, 'Bucket Mutton Biriyani', 3587)">ADD</button>
+            <button class="add-btn" onclick="addToCart(139, 'Bucket Mutton Biriyani', 3587)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -508,7 +660,7 @@
                 <div class="menu-price">₹365</div>
                 <p>A spicy Indo-Chinese dish with stir-fried rice, succulent prawns, and bold Schezwan flavors.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(40, 'Prawn 65 Biriyani', 365)">ADD</button>
+            <button class="add-btn" onclick="addToCart(140, 'Prawn 65 Biriyani', 365)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -517,7 +669,7 @@
                 <div class="menu-price">₹300</div>
                 <p>Stir-fried noodles with shredded chicken, vegetables, and Indo-Chinese seasonings.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(41, 'Chicken Noodles', 300)">ADD</button>
+            <button class="add-btn" onclick="addToCart(141, 'Chicken Noodles', 300)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -526,7 +678,7 @@
                 <div class="menu-price">₹323</div>
                 <p>A traditional chicken biryani dish paired with tangy salan and cooling raita.     </p>
             </div>
-            <button class="add-btn" onclick="addToCart(42, 'Prawn Biriyani', 323)">ADD</button>
+            <button class="add-btn" onclick="addToCart(142, 'Prawn Biriyani', 323)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -534,7 +686,7 @@
                 <div class="menu-price">₹289</div>
                 <p>A fiery and tangy rice dish with Schezwan sauce and stir-fried chicken.</p>
             </div>
-            <button class="add-btn" onclick="addToCart(43, 'Chicken Schezwan Rice', 289)">ADD</button>
+            <button class="add-btn" onclick="addToCart(143, 'Chicken Schezwan Rice', 289)">ADD</button>
         </div>
         </div>
         <div class="menu-container">
@@ -545,7 +697,7 @@
                     <div class="menu-price">₹199</div>
                     <p>A soft roll filled with spiced boneless mutton, perfect for a quick bite.</p>
                 </div>
-                <button class="add-btn" onclick="addToCart(44, 'Mutton Boneless Roll', 199)">ADD</button>
+                <button class="add-btn" onclick="addToCart(144, 'Mutton Boneless Roll', 199)">ADD</button>
             </div>
             <div class="menu-item">
                 <div class="menu-details">
@@ -553,7 +705,7 @@
                     <div class="menu-price">₹199</div>
                     <p>A delightful roll packed with tender, spiced boneless chicken.</p>
                 </div>
-                <button class="add-btn" onclick="addToCart(45, 'Chicken Boneless Roll', 199)">ADD</button>
+                <button class="add-btn" onclick="addToCart(145, 'Chicken Boneless Roll', 199)">ADD</button>
             </div>
             <div class="menu-item">
                 <div class="menu-details">
@@ -561,7 +713,7 @@
                     <div class="menu-price">₹199</div>
                     <p>A roll featuring minced mutton kebabs blended with aromatic Indian spices.</p>
                 </div>
-                <button class="add-btn" onclick="addToCart(46, 'Mutton Shami Kebab Roll', 199)">ADD</button>
+                <button class="add-btn" onclick="addToCart(146, 'Mutton Shami Kebab Roll', 199)">ADD</button>
             </div>
             <div class="menu-item">
                 <div class="menu-details">
@@ -569,7 +721,7 @@
                     <div class="menu-price">₹199</div>
                     <p>A flavorful chicken roll with a special blend of spices and sauces.</p>
                 </div>
-                <button class="add-btn" onclick="addToCart(47, 'Chicken Special Boneless Roll', 199)">ADD</button>
+                <button class="add-btn" onclick="addToCart(147, 'Chicken Special Boneless Roll', 199)">ADD</button>
             </div>
             <div class="menu-item">
                 <div class="menu-details">
@@ -578,7 +730,7 @@
                     <div class="menu-price">₹169</div>
                     <p>A juicy roll with skewered and grilled mutton kebabs, wrapped in soft flatbread.</p>
                 </div>
-                <button class="add-btn" onclick="addToCart(48, 'Mutton Sheek Kebab Roll', 169)">ADD</button>
+                <button class="add-btn" onclick="addToCart(148, 'Mutton Sheek Kebab Roll', 169)">ADD</button>
             </div>
             <div class="menu-item">
                 <div class="menu-details">
@@ -586,7 +738,7 @@
                     <div class="menu-price">₹188</div>
                     <p>A classic street-food favorite, featuring spiced egg filling wrapped in soft paratha.</p>
                 </div>
-                <button class="add-btn" onclick="addToCart(49, 'Egg Roll', 188)">ADD</button>
+                <button class="add-btn" onclick="addToCart(149, 'Egg Roll', 188)">ADD</button>
             </div>
             <div class="menu-item">
                 <div class="menu-details">
@@ -594,22 +746,79 @@
                     <div class="menu-price">₹198</div>
                     <p>A classic street-food favorite, featuring spiced egg filling wrapped in soft paratha.</p>
                 </div>
-                <button class="add-btn" onclick="addToCart(50, 'Egg Cheese Chicken Wrap Roll', 198)">ADD</button>
-            </div>
-            <div class="button-group">
-                <a href='/menu'>
-                    <button class="back-btn">Back</button>
-                </a>
-                <a href="/cart">
-                    <button class="cart-btn">Go to Cart</button>
-                </a>
-                
+                <button class="add-btn" onclick="addToCart(150, 'Egg Cheese Chicken Wrap Roll', 198)">ADD</button>
             </div>
         </div>
+    </div>
 
-        <script>
+    <script>
+// Clear localStorage cart if user just logged in/signed up (to prevent cart leakage between accounts)
+(function() {
+    var clearLocal = {{ clear_local_cart|default(false)|tojson }};
+    if (clearLocal) {
+        localStorage.removeItem('cart');
+        localStorage.removeItem('cart_user_id');
+        console.log('Cart cleared for new user session');
+    }
+})();
+
+// Check if cart belongs to current user - if not, clear it
+(function() {
+    var currentUserId = {{ session.get('user_id', 'null') }};
+    var cartUserId = localStorage.getItem('cart_user_id');
+    
+    if (currentUserId && cartUserId && cartUserId !== String(currentUserId)) {
+        localStorage.removeItem('cart');
+        localStorage.removeItem('cart_user_id');
+        console.log('Cart cleared - belongs to different user');
+    }
+    
+    if (currentUserId) {
+        localStorage.setItem('cart_user_id', String(currentUserId));
+    }
+})();
+
 // Load cart from localStorage
 let cart = JSON.parse(localStorage.getItem('cart')) || {};
+
+// Wrap all ADD buttons in containers on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Find all buttons with onclick="addToCart"
+    const addButtons = document.querySelectorAll('button.add-btn[onclick*="addToCart"]');
+    
+    addButtons.forEach(button => {
+        // Extract item ID from onclick attribute
+        const onclickAttr = button.getAttribute('onclick');
+        const match = onclickAttr.match(/addToCart\((\d+),/);
+        
+        if (match && match[1]) {
+            const itemId = match[1];
+            
+            // Check if button is already wrapped
+            if (!button.parentElement.id || !button.parentElement.id.startsWith('button-container-')) {
+                // Create wrapper div
+                const wrapper = document.createElement('div');
+                wrapper.id = `button-container-${itemId}`;
+                
+                // Insert wrapper before button
+                button.parentNode.insertBefore(wrapper, button);
+                
+                // Move button into wrapper
+                wrapper.appendChild(button);
+            }
+        }
+    });
+    
+    // Update UI for items in cart
+    cart = JSON.parse(localStorage.getItem('cart')) || {};
+    for (const itemId in cart) {
+        const item = cart[itemId];
+        updateButtonUI(itemId, item.name, item.price);
+    }
+    
+    // Update cart badge
+    updateCartBadge();
+});
 
 // Function to add item to cart
 function addToCart(itemId, itemName, itemPrice) {
@@ -625,6 +834,9 @@ function addToCart(itemId, itemName, itemPrice) {
     // Save to localStorage
     localStorage.setItem('cart', JSON.stringify(cart));
     
+    // Update button UI after adding item
+    updateButtonUI(itemId, itemName, itemPrice);
+    
     // Update cart badge
     updateCartBadge();
     
@@ -632,16 +844,84 @@ function addToCart(itemId, itemName, itemPrice) {
     showNotification(itemName);
 }
 
+// Function to update the button UI
+function updateButtonUI(itemId, itemName, itemPrice) {
+    const buttonContainer = document.getElementById(`button-container-${itemId}`);
+    
+    if (!buttonContainer) {
+        console.error(`Button container for item ${itemId} not found!`);
+        return;
+    }
+    
+    // Get current cart from localStorage
+    let cart = JSON.parse(localStorage.getItem('cart')) || {};
+    const quantity = cart[itemId]?.quantity || 0;
+    
+    if (quantity > 0) {
+        buttonContainer.innerHTML = `
+            <div class="quantity-selector">
+                <button class="quantity-btn" onclick="decreaseQuantity(${itemId}, '${itemName}', ${itemPrice})">-</button>
+                <span class="quantity" id="quantity-${itemId}">${quantity}</span>
+                <button class="quantity-btn" onclick="increaseQuantity(${itemId}, '${itemName}', ${itemPrice})">+</button>
+            </div>
+        `;
+    } else {
+        buttonContainer.innerHTML = `
+            <button class="add-btn" data-item-id="${itemId}" onclick="addToCart(${itemId}, '${itemName}', ${itemPrice})">ADD</button>
+        `;
+    }
+}
+
+// Function to increase quantity
+function increaseQuantity(itemId, itemName, itemPrice) {
+    // Get existing cart or initialize empty object
+    let cart = JSON.parse(localStorage.getItem('cart')) || {};
+    
+    if (cart[itemId]) {
+        cart[itemId].quantity++;
+        document.getElementById(`quantity-${itemId}`).innerText = cart[itemId].quantity;
+        
+        // Save to localStorage
+        localStorage.setItem('cart', JSON.stringify(cart));
+        
+        // Update cart badge
+        updateCartBadge();
+        
+        // Show notification
+        showNotification(itemName);
+    }
+}
+
+// Function to decrease quantity
+function decreaseQuantity(itemId, itemName, itemPrice) {
+    // Get existing cart or initialize empty object
+    let cart = JSON.parse(localStorage.getItem('cart')) || {};
+    
+    if (cart[itemId]) {
+        cart[itemId].quantity--;
+        
+        if (cart[itemId].quantity <= 0) {
+            delete cart[itemId]; // Remove item if quantity is 0
+            
+            // Reset the button to ADD using updateButtonUI
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateButtonUI(itemId, itemName, itemPrice);
+        } else {
+            document.getElementById(`quantity-${itemId}`).innerText = cart[itemId].quantity;
+            // Save to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+        
+        // Update cart badge
+        updateCartBadge();
+    }
+}
+
 // Function to update cart badge
 function updateCartBadge() {
-    // Create cart badge if it doesn't exist
-    let cartBadge = document.getElementById('cart-badge');
-    if (!cartBadge) {
-        cartBadge = document.createElement('div');
-        cartBadge.id = 'cart-badge';
-        cartBadge.className = 'cart-badge';
-        document.body.appendChild(cartBadge);
-    }
+    const cartBadge = document.getElementById('cart-badge');
+    
+    if (!cartBadge) return;
     
     // Get existing cart or initialize empty object
     let cart = JSON.parse(localStorage.getItem('cart')) || {};
@@ -664,14 +944,9 @@ function updateCartBadge() {
 
 // Function to show notification
 function showNotification(itemName) {
-    let notification = document.getElementById('notification');
+    const notification = document.getElementById('notification');
     
-    // Create notification element if it doesn't exist
-    if (!notification) {
-        notification = document.createElement('div');
-        notification.id = 'notification';
-        document.body.appendChild(notification);
-    }
+    if (!notification) return;
     
     notification.textContent = `${itemName} added to cart!`;
     notification.classList.add('show');
@@ -681,63 +956,6 @@ function showNotification(itemName) {
         notification.classList.remove('show');
     }, 2000);
 }
-
-// Function to increase quantity
-function increaseQuantity(itemId) {
-    // Get existing cart or initialize empty object
-    let cart = JSON.parse(localStorage.getItem('cart')) || {};
-    
-    if (cart[itemId]) {
-        cart[itemId].quantity++;
-        
-        // Save to localStorage
-        localStorage.setItem('cart', JSON.stringify(cart));
-        
-        // Update cart badge
-        updateCartBadge();
-        
-        // Show notification
-        showNotification(cart[itemId].name);
-    }
-}
-
-// Function to decrease quantity
-function decreaseQuantity(itemId) {
-    // Get existing cart or initialize empty object
-    let cart = JSON.parse(localStorage.getItem('cart')) || {};
-    
-    if (cart[itemId]) {
-        cart[itemId].quantity--;
-        
-        if (cart[itemId].quantity <= 0) {
-            delete cart[itemId]; // Remove item if quantity is 0
-        }
-        
-        // Save to localStorage
-        localStorage.setItem('cart', JSON.stringify(cart));
-        
-        // Update cart badge
-        updateCartBadge();
-    }
-}
-
-// Initialize UI when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    // Get existing cart or initialize empty object
-    cart = JSON.parse(localStorage.getItem('cart')) || {};
-    
-    // Update cart badge
-    updateCartBadge();
-});
-
-// Function to sync cart across tabs/windows
-window.addEventListener('storage', function(e) {
-    if (e.key === 'cart') {
-        cart = JSON.parse(e.newValue || '{}');
-        // Update cart badge
-        updateCartBadge();
-    }
-});
                   </script>
     </div>
 </body>

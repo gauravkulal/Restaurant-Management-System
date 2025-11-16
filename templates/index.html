@@ -584,6 +584,9 @@
                     <a href="#service" class="nav-link">Services</a>
                     <a href="#recommend" class="nav-link">Menu</a>
                     <a href="#contact" class="nav-link">Contact</a>
+                    {% if session.get('is_admin') %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="nav-link" style="color: #C9A875; font-weight: 600;">📊 Admin</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -800,6 +803,32 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
+        // Clear localStorage cart if user just logged in/signed up (to prevent cart leakage between accounts)
+        (function() {
+            var clearLocal = {{ clear_local_cart|default(false)|tojson }};
+            if (clearLocal) {
+                localStorage.removeItem('cart');
+                localStorage.removeItem('cart_user_id');
+                console.log('Cart cleared for new user session');
+            }
+        })();
+
+        // Check if cart belongs to current user - if not, clear it
+        (function() {
+            var currentUserId = {{ session.get('user_id', 'null') }};
+            var cartUserId = localStorage.getItem('cart_user_id');
+            
+            if (currentUserId && cartUserId && cartUserId !== String(currentUserId)) {
+                localStorage.removeItem('cart');
+                localStorage.removeItem('cart_user_id');
+                console.log('Cart cleared - belongs to different user');
+            }
+            
+            if (currentUserId) {
+                localStorage.setItem('cart_user_id', String(currentUserId));
+            }
+        })();
+
         // Navbar scroll effect
         window.addEventListener('scroll', function() {
             const navbar = document.querySelector('.navbar');

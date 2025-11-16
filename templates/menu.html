@@ -3,122 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurant Services</title>
-
+    <title>Menu Categories - Chai'osa Restaurant</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    
     <style>
+        :root {
+            --primary-color: #C9A875;
+            --secondary-color: #1a1a1a;
+            --accent-color: #B8956A;
+            --text-dark: #e8e8e8;
+            --text-light: #a0a0a0;
+            --bg-dark: #0f0f0f;
+            --bg-card: #1a1a1a;
+            --bg-hover: #252525;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
         }
 
         body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a1a 100%);
             min-height: 100vh;
-            background-color: #f4f4f4;
+            color: var(--text-dark);
+            padding: 40px 20px;
         }
 
         .container {
-            display: flex;
-            gap: 20px;
-            padding: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-            max-width: 1000px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .box {
-            width: 220px;
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        /* Header */
+        .page-header {
             text-align: center;
-            transition: 0.3s;
+            margin-bottom: 60px;
         }
 
-        .box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .box img {
-            width: 100px;
-            height: auto;
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
             margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        .box h3 {
-            font-size: 18px;
-            color: #333;
+        .page-header p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        .box p {
-            font-size: 14px;
-            color: #777;
+        /* Navigation */
+        .nav-bar {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border: 1px solid rgba(201, 168, 117, 0.1);
+        }
+
+        .nav-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            cursor: pointer;
+            background: var(--bg-hover);
+            color: var(--text-dark);
+        }
+
+        .nav-btn:hover {
+            background: var(--primary-color);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(201, 168, 117, 0.3);
+        }
+
+        .cart-btn {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        .cart-btn:hover {
+            background: var(--accent-color);
+        }
+
+        /* Category Grid */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .category-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(201, 168, 117, 0.1);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .category-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.5);
+            border-color: var(--primary-color);
+            background: var(--bg-hover);
+        }
+
+        .category-icon {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover .category-icon {
+            transform: scale(1.1);
+            color: var(--accent-color);
+        }
+
+        .category-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
             margin-bottom: 10px;
         }
 
-        .btn {
-            display: inline-block;
-            text-decoration: none;
-            background: #ff6600;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 5px;
-            font-size: 14px;
-            transition: 0.3s;
+        .category-card p {
+            color: var(--text-light);
+            font-size: 1rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
         }
 
-        .btn:hover {
-            background: #e55b00;
+        .category-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--primary-color);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(201, 168, 117, 0.3);
+        }
+
+        .category-btn:hover {
+            background: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(201, 168, 117, 0.4);
+            color: #fff;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-bar {
+                flex-direction: column;
+            }
+
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    
     <div class="container">
-        <div class="box">
-            <img src="../static/images/chai.png" alt="Beverages">
-            <h3>Beverages</h3>
-            <p>Get refreshing beverages</p>
-            <a href="{{ url_for('beverages') }}" class="btn">Menu</a>
-
+        <!-- Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-utensils"></i> Our Menu</h1>
+            <p>Explore our carefully curated categories of authentic Indian cuisine</p>
         </div>
 
-        <div class="box">
-            <img src="../static/images/samosa.png" alt="Snacks">
-            <h3>Snacks</h3>
-            <p>Grab tasty and crunchy treats</p>
-            <a href="{{ url_for('snacks') }}" class="btn">Menu</a>
+        <!-- Navigation -->
+        <div class="nav-bar">
+            <a href="{{ url_for('index') }}" class="nav-btn">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
+            <a href="/cart" class="nav-btn cart-btn">
+                <i class="fas fa-shopping-cart"></i> View Cart
+            </a>
         </div>
 
-        <div class="box">
-            <img src="../static/images/veg.png" alt="Veg">
-            <h3>Veg</h3>
-            <p>Eat Out & Save More</p>
-            <a href="{{ url_for('veg') }}" class="btn">Menu</a>
-        </div>
+        <!-- Category Grid -->
+        <div class="category-grid">
+            <!-- Veg Category -->
+            <div class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <h3>Vegetarian</h3>
+                <p>Fresh and flavorful vegetarian dishes made with premium ingredients</p>
+                <a href="{{ url_for('veg') }}" class="category-btn">View Menu</a>
+            </div>
 
-        <div class="box">
-            <img src="../static/images/nonveg.png" alt="Non-Veg">
-            <h3>Non-veg</h3>
-            <p>Delicious non-veg dishes</p>
-            <a href="{{ url_for('nonveg') }}" class="btn">Menu</a>
+            <!-- Non-Veg Category -->
+            <div class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-drumstick-bite"></i>
+                </div>
+                <h3>Non-Vegetarian</h3>
+                <p>Succulent meat dishes cooked to perfection with authentic spices</p>
+                <a href="{{ url_for('nonveg') }}" class="category-btn">View Menu</a>
+            </div>
+
+            <!-- Snacks Category -->
+            <div class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-cookie-bite"></i>
+                </div>
+                <h3>Snacks & Starters</h3>
+                <p>Crispy and delicious appetizers perfect for any time of day</p>
+                <a href="{{ url_for('snacks') }}" class="category-btn">View Menu</a>
+            </div>
+
+            <!-- Beverages Category -->
+            <div class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-mug-hot"></i>
+                </div>
+                <h3>Beverages</h3>
+                <p>Refreshing drinks and traditional chai to complement your meal</p>
+                <a href="{{ url_for('beverages') }}" class="category-btn">View Menu</a>
+            </div>
         </div>
     </div>
-    
-</div> <!-- container ends -->
-
-<div style="margin-top: 30px; text-align: center;">
-    <a href="/cart" style="background-color: #ff6600; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-size: 16px; font-weight: bold;">
-        🛒 View Cart
-    </a>
-</div>
-
 </body>
 </html>

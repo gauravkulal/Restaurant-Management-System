@@ -3,166 +3,312 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snacks Menu</title>
+    <title>Snacks Menu - Restaurant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;800&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
-            padding: 20px;
-            background-image: url("../static/images/3.png");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .menu-container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
-            padding: 20px;
+
+        :root {
+            --primary-color: #C9A875;
+            --accent-color: #B8956A;
+            --text-dark: #e8e8e8;
+            --text-light: #a0a0a0;
+            --bg-dark: #0f0f0f;
+            --bg-card: #1a1a1a;
+            --bg-hover: #252525;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 15px 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border: 1px solid rgba(201, 168, 117, 0.1);
+        }
+
+        .nav-btn, .cart-btn {
+            padding: 10px 20px;
+            border: none;
             border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            cursor: pointer;
+            background: var(--bg-hover);
+            color: var(--text-dark);
         }
+
+        .nav-btn:hover {
+            background: var(--primary-color);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .cart-btn {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        .cart-btn:hover {
+            background: var(--accent-color);
+        }
+
+        /* Menu Container */
+        .menu-container {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(201, 168, 117, 0.1);
+        }
+
+        .menu-container h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(201, 168, 117, 0.2);
+        }
+
+        .menu-container h2:first-child {
+            margin-top: 0;
+        }
+
+        /* Menu Item */
         .menu-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
+            padding: 20px;
+            border-bottom: 1px solid rgba(201, 168, 117, 0.1);
+            transition: background 0.3s ease;
         }
+
         .menu-item:last-child {
             border-bottom: none;
         }
-        .menu-item img {
-            width: 80px;
-            height: 80px;
+
+        .menu-item:hover {
+            background: var(--bg-hover);
             border-radius: 10px;
-            object-fit: cover;
         }
+
         .menu-details {
             flex: 1;
-            margin-left: 15px;
         }
+
         .menu-title {
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 5px;
         }
+
         .menu-price {
-            color: green;
-            font-weight: bold;
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
         }
+
+        .menu-item p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Buttons */
         .add-btn {
-            background-color: #28a745;
+            background: var(--primary-color);
             color: white;
-            padding: 5px 10px;
+            padding: 10px 25px;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(201, 168, 117, 0.3);
         }
+
         .add-btn:hover {
-            background-color: #218838;
+            background: var(--accent-color);
+            transform: translateY(-2px);
         }
+
         .quantity-selector {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            width: 88px;
-            border-radius: 5px;
-            overflow: hidden;
+            gap: 15px;
+            background: rgba(201, 168, 117, 0.1);
+            padding: 8px 15px;
+            border-radius: 10px;
         }
+
         .quantity-btn {
-            background-color: #28a745;
+            background: var(--primary-color);
             color: white;
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border: none;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
         }
+
         .quantity-btn:hover {
-            background-color: #218838;
+            background: var(--accent-color);
+            transform: scale(1.1);
         }
+
         .quantity {
             min-width: 30px;
             text-align: center;
-            font-weight: bold;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-dark);
         }
-        .button-group {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .back-btn, .cart-btn {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 150px;
-            white-space: nowrap;
-        }
-        .back-btn:hover, .cart-btn:hover {
-            background-color: #218838;
-        }
+
+        /* Cart Badge */
         .cart-badge {
             position: fixed;
             top: 20px;
             right: 20px;
-            background-color: #28a745;
+            background: var(--primary-color);
             color: white;
-            width: 24px;
-            height: 24px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
             opacity: 0;
             transition: opacity 0.3s;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(201, 168, 117, 0.4);
         }
+
         .cart-badge.show {
             opacity: 1;
         }
+
+        /* Notification */
         #notification {
             position: fixed;
-            top: 60px;
+            top: 80px;
             right: 20px;
-            background-color: #28a745;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
             color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transform: translateX(100%);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transform: translateX(400px);
             transition: transform 0.3s ease;
             z-index: 1000;
+            font-weight: 600;
         }
+
         #notification.show {
             transform: translateX(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .menu-container {
+                padding: 20px;
+            }
+
+            .menu-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .nav-bar {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
-    <h1 style="text-align:center;">Snacks Menu</h1>
-    
+    <!-- Cart Badge -->
     <div class="cart-badge" id="cart-badge">0</div>
     
+    <!-- Notification -->
     <div id="notification">Item added to cart!</div>
-    
-    <div class="menu-container">
+
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>🍿 Snacks Menu</h1>
+        </div>
+
+        <!-- Navigation Bar -->
+        <div class="nav-bar">
+            <a href="/menu" class="nav-btn">← Back to Menu</a>
+            <a href="/cart" class="cart-btn">🛒 View Cart</a>
+        </div>
+
+        <!-- Menu Container -->
+        <div class="menu-container">
         <div class="menu-item">
             <div class="menu-details">
                 <div class="menu-title">Samosa</div>
                 <div class="menu-price">₹30</div>
                 <p>Crispy pastry filled with spiced potatoes and peas</p>  
             </div>
-            <div id="button-container-1">
-                <button class="add-btn" onclick="addToCart(1,'Samosa',30)">Add</button>
+            <div id="button-container-26">
+                <button class="add-btn" data-item-id="26" onclick="addToCart(26,'Samosa',30)">ADD</button>
             </div>
         </div>
         <div class="menu-item">
@@ -171,8 +317,8 @@
                 <div class="menu-price">₹40</div>
                 <p>Flaky, deep-fried snack with a spiced lentil or potato filling</p>  
             </div>
-            <div id="button-container-2">
-                <button class="add-btn" onclick="addToCart(2,'Kachori',40)">Add</button>
+            <div id="button-container-27">
+                <button class="add-btn" onclick="addToCart(27,'Kachori',40)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -181,8 +327,8 @@
                 <div class="menu-price">₹35</div>
                 <p>Crunchy puris filled with tangy water, potatoes, and chickpeas</p>  
             </div>
-            <div id="button-container-3">
-                <button class="add-btn" onclick="addToCart(3,'Pani Puri',35)">Add</button>
+            <div id="button-container-28">
+                <button class="add-btn" onclick="addToCart(28,'Pani Puri',35)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -191,8 +337,8 @@
                 <div class="menu-price">₹20</div>
                 <p>Flaky pastry stuffed with spiced vegetables</p>  
             </div>
-            <div id="button-container-4">
-                <button class="add-btn" onclick="addToCart(4,'Veg Puff',20)">Add</button>
+            <div id="button-container-29">
+                <button class="add-btn" onclick="addToCart(29,'Veg Puff',20)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -201,8 +347,8 @@
                 <div class="menu-price">₹30</div>
                 <p>Crispy puff pastry with a seasoned egg filling</p>  
             </div>
-            <div id="button-container-5">
-                <button class="add-btn" onclick="addToCart(5,'Egg Puff',30)">Add</button>
+            <div id="button-container-30">
+                <button class="add-btn" onclick="addToCart(30,'Egg Puff',30)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -211,8 +357,8 @@
                 <div class="menu-price">₹35</div>
                 <p>Golden-fried potato and veggie patty</p>  
             </div>
-            <div id="button-container-6">
-                <button class="add-btn" onclick="addToCart(6,'Cutlet',35)">Add</button>
+            <div id="button-container-31">
+                <button class="add-btn" onclick="addToCart(31,'Cutlet',35)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -221,8 +367,8 @@
                 <div class="menu-price">₹60</div>
                 <p>Classic golden-fried potato sticks</p>  
             </div>
-            <div id="button-container-7">
-                <button class="add-btn" onclick="addToCart(7,'French Fries',60)">Add</button>
+            <div id="button-container-32">
+                <button class="add-btn" onclick="addToCart(32,'French Fries',60)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -231,8 +377,8 @@
                 <div class="menu-price">₹85</div>
                 <p>Crispy fries tossed in spicy peri peri seasoning</p>  
             </div>
-            <div id="button-container-8">
-                <button class="add-btn" onclick="addToCart(8,'Peri Peri Fries',85)">Add</button>
+            <div id="button-container-33">
+                <button class="add-btn" onclick="addToCart(33,'Peri Peri Fries',85)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -241,8 +387,8 @@
                 <div class="menu-price">₹175</div>
                 <p>Fries topped with juicy chicken, cheese, and sauces</p>  
             </div>
-            <div id="button-container-9">
-                <button class="add-btn" onclick="addToCart(9,'Chicken Loaded Fries',175)">Add</button>
+            <div id="button-container-34">
+                <button class="add-btn" onclick="addToCart(34,'Chicken Loaded Fries',175)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -251,8 +397,8 @@
                 <div class="menu-price">₹50</div>
                 <p>Spicy potato fritter in a soft bun with chutneys</p>  
             </div>
-            <div id="button-container-10">
-                <button class="add-btn" onclick="addToCart(10,'Vada Pav',50)">Add</button>
+            <div id="button-container-35">
+                <button class="add-btn" onclick="addToCart(35,'Vada Pav',50)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -261,8 +407,8 @@
                 <div class="menu-price">₹50</div>
                 <p>A tangy and crunchy mix of puffed rice, sev, chopped veggies, and chutneys</p>  
             </div>
-            <div id="button-container-11">
-                <button class="add-btn" onclick="addToCart(11,'Bhel Puri',50)">Add</button>
+            <div id="button-container-36">
+                <button class="add-btn" onclick="addToCart(36,'Bhel Puri',50)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -271,8 +417,8 @@
                 <div class="menu-price">₹75</div>
                 <p>Fresh veggies layered with spices and sauces between toasted or grilled bread</p>  
             </div>
-            <div id="button-container-12">
-                <button class="add-btn" onclick="addToCart(12,'Veg Sandwich',75)">Add</button>
+            <div id="button-container-37">
+                <button class="add-btn" onclick="addToCart(37,'Veg Sandwich',75)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -281,8 +427,8 @@
                 <div class="menu-price">₹95</div>
                 <p>Spiced mashed vegetables served with buttered pav</p>  
             </div>
-            <div id="button-container-13">
-                <button class="add-btn" onclick="addToCart(13,'Pav Bhaji',95)">Add</button>
+            <div id="button-container-38">
+                <button class="add-btn" onclick="addToCart(38,'Pav Bhaji',95)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -291,8 +437,8 @@
                 <div class="menu-price">₹100</div>
                 <p>Grilled paneer wrap with veggies and sauces</p>  
             </div>
-            <div id="button-container-14">
-                <button class="add-btn" onclick="addToCart(14,'Paneer Roll',100)">Add</button>
+            <div id="button-container-39">
+                <button class="add-btn" onclick="addToCart(39,'Paneer Roll',100)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -301,8 +447,8 @@
                 <div class="menu-price">₹65</div>
                 <p>Crunchy tapioca fritters with peanuts and spices</p>  
             </div>
-            <div id="button-container-15">
-                <button class="add-btn" onclick="addToCart(15,'Sabudana Vada',65)">Add</button>
+            <div id="button-container-40">
+                <button class="add-btn" onclick="addToCart(40,'Sabudana Vada',65)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -311,8 +457,8 @@
                 <div class="menu-price">₹80</div>
                 <p>Crispy bites filled with melted cheese and corn</p>  
             </div>
-            <div id="button-container-16">
-                <button class="add-btn" onclick="addToCart(16,'Corn Cheese Balls',80)">Add</button>
+            <div id="button-container-41">
+                <button class="add-btn" onclick="addToCart(41,'Corn Cheese Balls',80)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -321,8 +467,8 @@
                 <div class="menu-price">₹80</div>
                 <p>Golden nuggets made from seasoned potatoes</p>  
             </div>
-            <div id="button-container-17">
-                <button class="add-btn" onclick="addToCart(17,'Potato Nuggets',80)">Add</button>
+            <div id="button-container-42">
+                <button class="add-btn" onclick="addToCart(42,'Potato Nuggets',80)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -331,8 +477,8 @@
                 <div class="menu-price">₹120</div>
                 <p>Steamed or fried dumplings stuffed with spiced paneer</p>  
             </div>
-            <div id="button-container-18">
-                <button class="add-btn" onclick="addToCart(18,'Paneer Momos',120)">Add</button>
+            <div id="button-container-43">
+                <button class="add-btn" onclick="addToCart(43,'Paneer Momos',120)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -341,8 +487,8 @@
                 <div class="menu-price">₹110</div>
                 <p>Crunchy nachos topped with melted cheese</p>  
             </div>
-            <div id="button-container-19">
-                <button class="add-btn" onclick="addToCart(19,'Cheese Nachos',110)">Add</button>
+            <div id="button-container-44">
+                <button class="add-btn" onclick="addToCart(44,'Cheese Nachos',110)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -351,8 +497,8 @@
                 <div class="menu-price">₹199</div>
                 <p>Crispy fried rolls with a savory veggie filling</p>  
             </div>
-            <div id="button-container-20">
-                <button class="add-btn" onclick="addToCart(20,'Spring Roll',199)">Add</button>
+            <div id="button-container-45">
+                <button class="add-btn" onclick="addToCart(45,'Spring Roll',199)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -361,8 +507,8 @@
                 <div class="menu-price">₹55</div>
                 <p>Soft donut with rich chocolate glaze</p>  
             </div>
-            <div id="button-container-21">
-                <button class="add-btn" onclick="addToCart(21,'Chocolate Donut',55)">Add</button>
+            <div id="button-container-46">
+                <button class="add-btn" onclick="addToCart(46,'Chocolate Donut',55)">Add</button>
             </div>
         </div>
         <div class="menu-item">
@@ -417,6 +563,32 @@
     </div>
 
     <script>
+        // Clear localStorage cart if user just logged in/signed up (to prevent cart leakage between accounts)
+        (function() {
+            var clearLocal = {{ clear_local_cart|default(false)|tojson }};
+            if (clearLocal) {
+                localStorage.removeItem('cart');
+                localStorage.removeItem('cart_user_id');
+                console.log('Cart cleared for new user session');
+            }
+        })();
+
+        // Check if cart belongs to current user - if not, clear it
+        (function() {
+            var currentUserId = {{ session.get('user_id', 'null') }};
+            var cartUserId = localStorage.getItem('cart_user_id');
+            
+            if (currentUserId && cartUserId && cartUserId !== String(currentUserId)) {
+                localStorage.removeItem('cart');
+                localStorage.removeItem('cart_user_id');
+                console.log('Cart cleared - belongs to different user');
+            }
+            
+            if (currentUserId) {
+                localStorage.setItem('cart_user_id', String(currentUserId));
+            }
+        })();
+
         // Load cart from localStorage
         let cart = JSON.parse(localStorage.getItem('cart')) || {};
 
@@ -453,6 +625,8 @@
                 return;
             }
             
+            // Get current cart from localStorage
+            let cart = JSON.parse(localStorage.getItem('cart')) || {};
             const quantity = cart[itemId]?.quantity || 0;
             
             if (quantity > 0) {
@@ -465,7 +639,7 @@
                 `;
             } else {
                 buttonContainer.innerHTML = `
-                    <button class="add-btn" onclick="addToCart(${itemId}, '${itemName}', ${itemPrice})">Add</button>
+                    <button class="add-btn" data-item-id="${itemId}" onclick="addToCart(${itemId}, '${itemName}', ${itemPrice})">ADD</button>
                 `;
             }
         }
@@ -501,19 +675,14 @@
                 if (cart[itemId].quantity <= 0) {
                     delete cart[itemId]; // Remove item if quantity is 0
                     
-                    // Reset the button to ADD
-                    const buttonContainer = document.getElementById(`button-container-${itemId}`);
-                    if (buttonContainer) {
-                        buttonContainer.innerHTML = `
-                            <button class="add-btn" onclick="addToCart(${itemId}, '${itemName}', ${itemPrice})">Add</button>
-                        `;
-                    }
+                    // Reset the button to ADD using updateButtonUI
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    updateButtonUI(itemId, itemName, itemPrice);
                 } else {
                     document.getElementById(`quantity-${itemId}`).innerText = cart[itemId].quantity;
+                    // Save to localStorage
+                    localStorage.setItem('cart', JSON.stringify(cart));
                 }
-                
-                // Save to localStorage
-                localStorage.setItem('cart', JSON.stringify(cart));
                 
                 // Update cart badge
                 updateCartBadge();

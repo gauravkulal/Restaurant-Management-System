@@ -793,6 +793,32 @@
     </div>
 
     <script>
+// Clear localStorage cart if user just logged in/signed up (to prevent cart leakage between accounts)
+(function() {
+    var clearLocal = {{ clear_local_cart|default(false)|tojson }};
+    if (clearLocal) {
+        localStorage.removeItem('cart');
+        localStorage.removeItem('cart_user_id');
+        console.log('Cart cleared for new user session');
+    }
+})();
+
+// Check if cart belongs to current user - if not, clear it
+(function() {
+    var currentUserId = {{ session.get('user_id', 'null') }};
+    var cartUserId = localStorage.getItem('cart_user_id');
+    
+    if (currentUserId && cartUserId && cartUserId !== String(currentUserId)) {
+        localStorage.removeItem('cart');
+        localStorage.removeItem('cart_user_id');
+        console.log('Cart cleared - belongs to different user');
+    }
+    
+    if (currentUserId) {
+        localStorage.setItem('cart_user_id', String(currentUserId));
+    }
+})();
+
 // Load cart from localStorage
 let cart = JSON.parse(localStorage.getItem('cart')) || {};
 
@@ -829,6 +855,8 @@ function updateButtonUI(itemId, itemName, itemPrice) {
         return;
     }
     
+    // Get current cart from localStorage
+    let cart = JSON.parse(localStorage.getItem('cart')) || {};
     const quantity = cart[itemId]?.quantity || 0;
     
     if (quantity > 0) {
@@ -877,19 +905,14 @@ function decreaseQuantity(itemId, itemName, itemPrice) {
         if (cart[itemId].quantity <= 0) {
             delete cart[itemId]; // Remove item if quantity is 0
             
-            // Reset the button to ADD
-            const buttonContainer = document.getElementById(`button-container-${itemId}`);
-            if (buttonContainer) {
-                buttonContainer.innerHTML = `
-                    <button class="add-btn" onclick="addToCart(${itemId}, '${itemName}', ${itemPrice})">Add to Cart</button>
-                `;
-            }
+            // Reset the button to ADD using updateButtonUI
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateButtonUI(itemId, itemName, itemPrice);
         } else {
             document.getElementById(`quantity-${itemId}`).innerText = cart[itemId].quantity;
+            // Save to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
         }
-        
-        // Save to localStorage
-        localStorage.setItem('cart', JSON.stringify(cart));
         
         // Update cart badge
         updateCartBadge();

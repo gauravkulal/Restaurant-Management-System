@@ -3,99 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
+    <title>Sign Up - Chai'osa Restaurant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* General styles */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: rgb(34, 37, 41);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        :root {
+            --primary-color: #C9A875;
+            --accent-color: #B8956A;
+            --text-dark: #e8e8e8;
+            --text-light: #a0a0a0;
+            --bg-dark: #0f0f0f;
+            --bg-card: #1a1a1a;
+        }
+
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        /* Container */
-        .container {
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a1a 100%);
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
             width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* Sign-Up Box */
         .signup-box {
-            background: rgb(69, 75, 83);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            background: var(--bg-card);
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
             text-align: center;
-            width: 350px;
+            width: 400px;
+            max-width: 95vw;
+            border: 1px solid rgba(201, 168, 117, 0.2);
         }
 
-        /* Profile Image */
         .profile-img {
-            width: 70px;
-            height: 70px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(201, 168, 117, 0.3);
         }
 
-        /* Heading */
         h2 {
-            margin: 10px 0;
-            font-size: 22px;
-            color: white;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-weight: 700;
         }
 
-        /* Input Fields */
+        p {
+            color: var(--text-light);
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+
+        .error-message {
+            color: #ff4757;
+            background: rgba(255, 71, 87, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
         form {
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 100%;
         }
 
         form input {
-            width: 90%;
-            padding: 12px;
+            width: 100%;
+            padding: 14px;
             margin: 8px 0;
-            border: 1px solid rgb(0, 0, 0);
-            border-radius: 8px;
+            border: 1px solid rgba(201, 168, 117, 0.3);
+            border-radius: 10px;
             font-size: 16px;
-            background: white;
+            background: rgba(255,255,255,0.05);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
         }
 
-        /* Sign-Up Button */
+        form input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: rgba(255,255,255,0.08);
+        }
+
+        form input::placeholder {
+            color: var(--text-light);
+        }
+
         .signup-btn {
             width: 100%;
-            background-color: rgba(49, 108, 244, 1);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
             border: none;
-            padding: 12px;
-            font-size: 16px;
-            border-radius: 5px;
-            color: white;
+            padding: 14px;
+            font-size: 17px;
+            border-radius: 10px;
+            color: #fff;
             cursor: pointer;
-            margin-top: 10px;
-            font-weight: bold;
-            transition: background-color 0.3s ease-in-out;
+            margin-top: 15px;
+            font-weight: 700;
+            box-shadow: 0 5px 20px rgba(201, 168, 117, 0.3);
+            transition: all 0.3s ease;
         }
 
         .signup-btn:hover {
-            background-color: rgba(49, 108, 244, 1);
+            background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(201, 168, 117, 0.4);
         }
 
-        /* Sign in link */
         .signin-text {
-            margin-top: 15px;
-            font-size: 14px;
-            color: white;
+            margin-top: 20px;
+            font-size: 0.95rem;
+            color: var(--text-light);
         }
 
         .signin-text a {
-            color:rgba(49, 108, 244, 1);
+            color: var(--primary-color);
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .signin-text a:hover {
+            color: var(--accent-color);
+        }
+
+        @media (max-width: 500px) {
+            .signup-box {
+                padding: 30px 20px;
+            }
+            
+            h2 {
+                font-size: 1.75rem;
+            }
         }
     </style>
    

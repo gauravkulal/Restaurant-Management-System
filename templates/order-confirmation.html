@@ -3,96 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Confirmation</title>
+    <title>Order Confirmation - Restaurant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;800&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #C9A875;
+            --accent-color: #B8956A;
+            --text-dark: #e8e8e8;
+            --text-light: #a0a0a0;
+            --bg-dark: #0f0f0f;
+            --bg-card: #1a1a1a;
+            --bg-hover: #252525;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            padding: 20px;
         }
 
         .confirmation-container {
-            background-color: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            max-width: 500px;
+            background: var(--bg-card);
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(201, 168, 117, 0.1);
+            max-width: 600px;
+            width: 100%;
             text-align: center;
-            margin: 20px;
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         h1 {
-            color: #28a745;
-            margin-bottom: 20px;
-        }
-
-        p {
-            font-size: 16px;
-            color: #444;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
             margin-bottom: 15px;
         }
 
+        p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
         #order-id {
-            color: #ff6600;
-            font-weight: bold;
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.2rem;
         }
 
         .order-details {
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
+            margin: 30px 0;
+            padding: 25px;
+            background: rgba(201, 168, 117, 0.1);
+            border-radius: 15px;
+            border: 1px solid rgba(201, 168, 117, 0.2);
+        }
+
+        .order-details h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .order-details p {
             text-align: left;
+            margin-bottom: 8px;
+            color: var(--text-dark);
         }
 
         .btn {
             display: inline-block;
-            margin-top: 20px;
-            background-color: #007bff;
+            margin-top: 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
             color: white;
-            padding: 12px 20px;
+            padding: 15px 40px;
             text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(201, 168, 117, 0.4);
+            font-size: 1.1rem;
         }
 
         .btn:hover {
-            background-color: #0056b3;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(201, 168, 117, 0.5);
         }
-        
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .logo img {
-            height: 80px;
-            width: auto;
+
+        @media (max-width: 768px) {
+            .confirmation-container {
+                padding: 35px 25px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="confirmation-container">
-        <div class="logo">
-            <img src="../static/images/chai_osa.png" alt="Restaurant Logo" />
-        </div>
+        <div class="success-icon">✅</div>
         
-        <h1>Thank You for Your Order!</h1>
-        <p>Your order has been received and is being processed.</p>
-        <p>Order ID: <strong id="order-id">{{ order_id }}</strong></p>
+        <h1>Order Confirmed!</h1>
+        <p>Your order has been successfully placed and is being processed.</p>
+        <p>Order ID: <span id="order-id">{{ order_id }}</span></p>
         
         <div class="order-details" id="order-summary">
-            <!-- Order details will be shown here if available -->
+            <h3>Order Summary</h3>
+            <p>Your delicious food is on its way!</p>
+            <p>We'll send you an email confirmation shortly.</p>
         </div>
         
-        <p>You will receive an email confirmation shortly.</p>
         <a href="/index" class="btn">Return to Home</a>
     </div>
     

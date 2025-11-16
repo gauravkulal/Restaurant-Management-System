@@ -7,14 +7,52 @@
     <link rel="icon" href="data:,">
     <style>
         /* General styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: rgb(34, 37, 41);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #2d2d2d 100%);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated background elements */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(201, 168, 117, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -200px;
+            right: -200px;
+            animation: float 20s infinite alternate;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(201, 168, 117, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -150px;
+            left: -150px;
+            animation: float 15s infinite alternate-reverse;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 50px) scale(1.1); }
         }
 
         /* Container */
@@ -23,75 +61,201 @@
             justify-content: center;
             align-items: center;
             width: 100%;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
         }
 
         /* Login Box */
         .login-box {
-            background: rgb(69, 75, 83);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 50px 45px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+                        0 0 1px rgba(201, 168, 117, 0.3);
             text-align: center;
-            width: 350px;
+            width: 100%;
+            max-width: 440px;
+            border: 1px solid rgba(201, 168, 117, 0.1);
+            position: relative;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Decorative top bar */
+        .login-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #C9A875, #E5C896, #C9A875);
+            border-radius: 0 0 4px 4px;
         }
 
         /* Profile Image */
         .profile-img {
-            width: 60px;
-            height: 60px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
+            border: 3px solid #C9A875;
+            padding: 5px;
+            background: #1a1a1a;
+            box-shadow: 0 8px 20px rgba(201, 168, 117, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .profile-img:hover {
+            transform: scale(1.05) rotate(5deg);
         }
 
         /* Heading */
         h2 {
-            margin: 10px 0;
-            font-size: 20px;
-            color: white;
+            margin: 15px 0 10px;
+            font-size: 28px;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .login-box > p {
+            color: #a0a0a0;
+            font-size: 15px;
+            margin-bottom: 30px;
+        }
+
+        /* Form Inputs Container */
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            color: #C9A875;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         /* Form Inputs */
         form input {
-            width: 90%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid rgb(0, 0, 0);
-            border-radius: 8px;
-            font-size: 16px;
-            background: white;
+            width: 100%;
+            padding: 15px 18px;
+            border: 2px solid rgba(201, 168, 117, 0.2);
+            border-radius: 12px;
+            font-size: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        form input:focus {
+            border-color: #C9A875;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 4px rgba(201, 168, 117, 0.1);
+        }
+
+        form input::placeholder {
+            color: #666;
         }
 
         /* Continue Button */
         .continue-btn {
             width: 100%;
-            background-color: rgba(49, 108, 244, 1);
+            background: linear-gradient(135deg, #C9A875 0%, #B89960 100%);
             border: none;
-            padding: 10px;
+            padding: 16px;
             font-size: 16px;
-            border-radius: 5px;
-            color: white;
+            font-weight: 600;
+            border-radius: 12px;
+            color: #0f0f0f;
             cursor: pointer;
             margin-top: 10px;
-            transition: background-color 0.3s ease-in-out;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(201, 168, 117, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .continue-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .continue-btn:hover::before {
+            left: 100%;
         }
 
         /* Button Hover Effect */
         .continue-btn:hover {
-            background-color: rgba(29, 88, 224, 1);
+            background: linear-gradient(135deg, #E5C896 0%, #C9A875 100%);
+            box-shadow: 0 6px 25px rgba(201, 168, 117, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .continue-btn:active {
+            transform: translateY(0);
         }
 
         /* Sign up link */
         .signup-text {
-            margin-top: 15px;
-            font-size: 14px;
-            color: white;
+            margin-top: 30px;
+            font-size: 15px;
+            color: #a0a0a0;
         }
 
         .signup-text a {
-            color:rgba(29, 88, 224, 1);
+            color: #C9A875;
             text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
         }
 
+        .signup-text a:hover {
+            color: #E5C896;
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .login-box {
+                padding: 40px 30px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            .profile-img {
+                width: 70px;
+                height: 70px;
+            }
+        }
     </style>
     <script>
         function redirectToIndex(event) {
@@ -105,20 +269,25 @@
     <div class="container">
         <div class="login-box">
             <img src="{{ url_for('static', filename='images/chai_osa.png') }}" alt="Profile Picture" class="profile-img">
-            <h2>Login to join our Restaurant</h2>
-            <p>Welcome back! Please sign in to continue</p>
+            <h2>Welcome Back</h2>
+            <p>Sign in to continue to your account</p>
 
-            <form id="loginForm"method="POST">
-                <input type="text" name="username" placeholder="Username" required>
-                <input type="password" name="password" placeholder="Password" required>
-                <button type="submit" class="continue-btn">Continue</button>
+            <form id="loginForm" method="POST">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" class="continue-btn">Sign In</button>
             </form>
 
-            <p class="signup-text">Don't have an account? <a href="signup.html">Sign up</a></p>
+            <p class="signup-text">Don't have an account? <a href="signup.html">Create Account</a></p>
         </div>
-        <script>
-            // ...existing code...
-        </script>
     </div>
 
 </body>

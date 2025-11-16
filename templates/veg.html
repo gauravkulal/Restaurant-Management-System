@@ -3,157 +3,308 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Indian Veg Starters</title>
+    <title>Vegetarian Menu - Chai'osa Restaurant</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    
     <style>
- body {
-            font-family: Arial, sans-serif;
+        :root {
+            --primary-color: #C9A875;
+            --accent-color: #B8956A;
+            --text-dark: #e8e8e8;
+            --text-light: #a0a0a0;
+            --bg-dark: #0f0f0f;
+            --bg-card: #1a1a1a;
+            --bg-hover: #252525;
+        }
+
+        * {
             margin: 0;
-            padding: 20px;
-            background-image: url("../static/images/3.png");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .menu-container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
             padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 15px 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border: 1px solid rgba(201, 168, 117, 0.1);
+        }
+
+        .nav-btn, .cart-btn {
+            padding: 10px 20px;
+            border: none;
             border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            cursor: pointer;
+            background: var(--bg-hover);
+            color: var(--text-dark);
         }
+
+        .nav-btn:hover {
+            background: var(--primary-color);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .cart-btn {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        .cart-btn:hover {
+            background: var(--accent-color);
+        }
+
+        /* Menu Container */
+        .menu-container {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(201, 168, 117, 0.1);
+        }
+
+        .menu-container h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(201, 168, 117, 0.2);
+        }
+
+        .menu-container h2:first-child {
+            margin-top: 0;
+        }
+
+        /* Menu Item */
         .menu-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
+            padding: 20px;
+            border-bottom: 1px solid rgba(201, 168, 117, 0.1);
+            transition: background 0.3s ease;
         }
+
         .menu-item:last-child {
             border-bottom: none;
         }
-        .menu-item img {
-            width: 80px;
-            height: 80px;
+
+        .menu-item:hover {
+            background: var(--bg-hover);
             border-radius: 10px;
-            object-fit: cover;
         }
+
         .menu-details {
             flex: 1;
-            margin-left: 15px;
         }
+
         .menu-title {
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 5px;
         }
+
         .menu-price {
-            color: green;
-            font-weight: bold;
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
         }
+
+        .menu-item p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Buttons */
         .add-btn {
-            background-color: #28a745;
+            background: var(--primary-color);
             color: white;
-            padding: 5px 10px;
+            padding: 10px 25px;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(201, 168, 117, 0.3);
         }
+
         .add-btn:hover {
-            background-color: #218838;
+            background: var(--accent-color);
+            transform: translateY(-2px);
         }
+
         .quantity-selector {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            width: 88px;
-            border-radius: 5px;
-            overflow: hidden;
+            gap: 15px;
+            background: rgba(201, 168, 117, 0.1);
+            padding: 8px 15px;
+            border-radius: 10px;
         }
+
         .quantity-btn {
-            background-color: #28a745;
+            background: var(--primary-color);
             color: white;
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border: none;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
         }
+
         .quantity-btn:hover {
-            background-color: #218838;
+            background: var(--accent-color);
+            transform: scale(1.1);
         }
+
         .quantity {
             min-width: 30px;
             text-align: center;
-            font-weight: bold;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-dark);
         }
-        .button-group {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .back-btn, .cart-btn {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 150px;
-            white-space: nowrap;
-        }
-        .back-btn:hover, .cart-btn:hover {
-            background-color: #218838;
-        }
+
+        /* Cart Badge */
         .cart-badge {
             position: fixed;
             top: 20px;
             right: 20px;
-            background-color: #28a745;
+            background: var(--primary-color);
             color: white;
-            width: 24px;
-            height: 24px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
             opacity: 0;
             transition: opacity 0.3s;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(201, 168, 117, 0.4);
         }
+
         .cart-badge.show {
             opacity: 1;
         }
+
+        /* Notification */
         #notification {
             position: fixed;
-            top: 60px;
+            top: 80px;
             right: 20px;
-            background-color: #28a745;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
             color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transform: translateX(100%);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transform: translateX(400px);
             transition: transform 0.3s ease;
             z-index: 1000;
+            font-weight: 600;
         }
+
         #notification.show {
             transform: translateX(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .menu-container {
+                padding: 20px;
+            }
+
+            .menu-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .nav-bar {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
-    <h1 style="text-align:center;">Veg Menu</h1>
-    
+    <!-- Cart Badge -->
     <div class="cart-badge" id="cart-badge">0</div>
     
+    <!-- Notification -->
     <div id="notification">Item added to cart!</div>
-    <div class="menu-container">
+
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>🥗 Vegetarian Delights</h1>
+        </div>
+
+        <!-- Navigation Bar -->
+        <div class="nav-bar">
+            <a href="/menu" class="nav-btn">← Back to Menu</a>
+            <a href="/cart" class="cart-btn">🛒 View Cart</a>
+        </div>
+
+        <!-- Menu Container -->
+        <div class="menu-container">
         <h2>Veg Soups</h2>
         <div class="menu-item">
             <div class="menu-details">
@@ -161,7 +312,7 @@
                 <div class="menu-price">₹195</div>
                 <p>Spicy and tangy soup loaded with crunchy vegetables</p>
             </div>
-            <button class="add-btn" data-item-id="1" onclick="addToCart(1, 'Manchow Soup', 195)">ADD</button>
+            <button class="add-btn" data-item-id="51" onclick="addToCart(51, 'Manchow Soup', 195)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -169,7 +320,7 @@
                 <div class="menu-price">₹185</div>
                 <p>Flavorful broth with a perfect balance of heat and tanginess</p>
             </div>
-            <button class="add-btn" data-item-id="2" onclick="addToCart(2, 'Hot & Sour Soup', 185)">ADD</button>
+            <button class="add-btn" data-item-id="52" onclick="addToCart(52, 'Hot & Sour Soup', 185)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -177,7 +328,7 @@
                 <div class="menu-price">₹195</div>
                 <p>Refreshing soup with a zesty blend of tomatoes and ginger</p>
             </div>
-            <button class="add-btn" data-item-id="3" onclick="addToCart(3, 'Tomato Ginger Soup', 195)">ADD</button>
+            <button class="add-btn" data-item-id="53" onclick="addToCart(53, 'Tomato Ginger Soup', 195)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -185,7 +336,7 @@
                 <div class="menu-price">₹195</div>
                 <p>Rich and creamy soup made with fresh mushrooms</p>
             </div>
-            <button class="add-btn" data-item-id="4" onclick="addToCart(4, 'Cream of Mushroom Soup', 195)">ADD</button>
+            <button class="add-btn" data-item-id="54" onclick="addToCart(54, 'Cream of Mushroom Soup', 195)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -193,7 +344,7 @@
                 <div class="menu-price">₹185</div>
                 <p>Comforting soup with the sweetness of corn and a hint of pepper</p>
             </div>
-            <button class="add-btn" data-item-id="5" onclick="addToCart(5, 'Sweet Corn Soup', 185)">ADD</button>
+            <button class="add-btn" data-item-id="55" onclick="addToCart(55, 'Sweet Corn Soup', 185)">ADD</button>
         </div>
 
         <h2>Veg Starters</h2>
@@ -203,7 +354,7 @@
                 <div class="menu-price">₹270</div>
                 <p>Crispy and spicy cauliflower bites tossed with aromatic spices</p>
             </div>
-            <button class="add-btn" data-item-id="6" onclick="addToCart(6, 'Gobi 65', 270)">ADD</button>
+            <button class="add-btn" data-item-id="56" onclick="addToCart(56, 'Gobi 65', 270)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -211,7 +362,7 @@
                 <div class="menu-price">₹370</div>
                 <p>Deep-fried paneer cubes coated in a spicy batter</p>
             </div>
-            <button class="add-btn" data-item-id="7" onclick="addToCart(7, 'Paneer 65', 370)">ADD</button>
+            <button class="add-btn" data-item-id="57" onclick="addToCart(57, 'Paneer 65', 370)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -219,7 +370,7 @@
                 <div class="menu-price">₹399</div>
                 <p>Marinated paneer cubes grilled to perfection with smoky flavors</p>
             </div>
-            <button class="add-btn" data-item-id="8" onclick="addToCart(8, 'Paneer Tikka', 399)">ADD</button>
+            <button class="add-btn" data-item-id="58" onclick="addToCart(58, 'Paneer Tikka', 399)">ADD</button>
         </div>
         
         <div class="menu-item">
@@ -228,7 +379,7 @@
                 <div class="menu-price">₹268</div>
                 <p>Mix of vegetables coated in a crispy batter and deep-fried</p>
             </div>
-            <button class="add-btn" data-item-id="9" onclick="addToCart(9, 'Crispy Fried Veg', 268)">ADD</button>
+            <button class="add-btn" data-item-id="59" onclick="addToCart(59, 'Crispy Fried Veg', 268)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -236,7 +387,7 @@
                 <div class="menu-price">₹316</div>
                 <p>Baby corn stir-fried with aromatic spices and black pepper</p>
             </div>
-            <button class="add-btn" data-item-id="10" onclick="addToCart(10, 'Baby Corn Pepper Fry', 316)">ADD</button>
+            <button class="add-btn" data-item-id="60" onclick="addToCart(60, 'Baby Corn Pepper Fry', 316)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -244,7 +395,7 @@
                 <div class="menu-price">₹319</div>
                 <p>Spicy and saucy paneer tossed in an Indo-Chinese style</p>
             </div>
-            <button class="add-btn" data-item-id="11" onclick="addToCart(11, 'Dragon Paneer', 319)">ADD</button>
+            <button class="add-btn" data-item-id="61" onclick="addToCart(61, 'Dragon Paneer', 319)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -252,7 +403,7 @@
                 <div class="menu-price">₹250</div>
                 <p>Crispy potato fingers tossed in a sweet and spicy sauce</p>
             </div>
-            <button class="add-btn" data-item-id="12" onclick="addToCart(12, 'Honey Chilli Potato', 250)">ADD</button>
+            <button class="add-btn" data-item-id="62" onclick="addToCart(62, 'Honey Chilli Potato', 250)">ADD</button>
         </div>
 
         <h2>Veg Main Course</h2>
@@ -262,7 +413,7 @@
                 <div class="menu-price">₹250</div>
                 <p>Wholesome platter with rice, sambar, rasam, and assorted curries</p>
             </div>
-            <button class="add-btn" data-item-id="13" onclick="addToCart(13, 'South Indian Meals', 250)">ADD</button>
+            <button class="add-btn" data-item-id="63" onclick="addToCart(63, 'South Indian Meals', 250)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -270,7 +421,7 @@
                 <div class="menu-price">₹345</div>
                 <p>Delicious spread of roti, rice, dal, and vegetable curries</p>
             </div>
-            <button class="add-btn" data-item-id="14" onclick="addToCart(14, 'North Indian Meals', 345)">ADD</button>
+            <button class="add-btn" data-item-id="64" onclick="addToCart(64, 'North Indian Meals', 345)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -278,7 +429,7 @@
                 <div class="menu-price">₹150</div>
                 <p>Comforting one-pot dish with rice and flavorful sambar</p>
             </div>
-            <button class="add-btn" data-item-id="15" onclick="addToCart(15, 'Sambar Rice', 150)">ADD</button>
+            <button class="add-btn" data-item-id="65" onclick="addToCart(65, 'Sambar Rice', 150)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -286,7 +437,7 @@
                 <div class="menu-price">₹150</div>
                 <p>Cooling and creamy dish made with yogurt and rice</p>
             </div>
-            <button class="add-btn" data-item-id="16" onclick="addToCart(16, 'Curd Rice', 150)">ADD</button>
+            <button class="add-btn" data-item-id="66" onclick="addToCart(66, 'Curd Rice', 150)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -294,7 +445,7 @@
                 <div class="menu-price">₹299</div>
                 <p>Stir-fried rice with mixed vegetables and soy sauce</p>
             </div>
-            <button class="add-btn" data-item-id="17" onclick="addToCart(17, 'Veg Fried Rice', 299)">ADD</button>
+            <button class="add-btn" data-item-id="67" onclick="addToCart(67, 'Veg Fried Rice', 299)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -302,7 +453,7 @@
                 <div class="menu-price">₹299</div>
                 <p>Stir-fried noodles tossed with crunchy vegetables and sauces</p>
             </div>
-            <button class="add-btn" data-item-id="18" onclick="addToCart(18, 'Veg Noodles', 299)">ADD</button>
+            <button class="add-btn" data-item-id="68" onclick="addToCart(68, 'Veg Noodles', 299)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -310,7 +461,7 @@
                 <div class="menu-price">₹250</div>
                 <p>Fragrant basmati rice infused with roasted cumin seeds</p>
             </div>
-            <button class="add-btn" data-item-id="19" onclick="addToCart(19, 'Jeera Rice', 250)">ADD</button>
+            <button class="add-btn" data-item-id="69" onclick="addToCart(69, 'Jeera Rice', 250)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -318,7 +469,7 @@
                 <div class="menu-price">₹350</div>
                 <p>Aromatic basmati rice cooked with vegetables and flavorful spices</p>
             </div>
-            <button class="add-btn" data-item-id="20" onclick="addToCart(20, 'Veg Biriyani', 350)">ADD</button>
+            <button class="add-btn" data-item-id="70" onclick="addToCart(70, 'Veg Biriyani', 350)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -326,7 +477,7 @@
                 <div class="menu-price">₹400</div>
                 <p>Rich and flavorful biryani with masaledhan paneer</p>
             </div>
-            <button class="add-btn" data-item-id="21" onclick="addToCart(21, 'Paneer Biriyani', 400)">ADD</button>
+            <button class="add-btn" data-item-id="71" onclick="addToCart(71, 'Paneer Biriyani', 400)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -334,7 +485,7 @@
                 <div class="menu-price">₹380</div>
                 <p>Mildly sweet rice dish loaded with dry fruits and saffron</p>
             </div>
-            <button class="add-btn" data-item-id="22" onclick="addToCart(22, 'Kashmiri Pulao', 380)">ADD</button>
+            <button class="add-btn" data-item-id="72" onclick="addToCart(72, 'Kashmiri Pulao', 380)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -342,7 +493,7 @@
                 <div class="menu-price">₹400</div>
                 <p>Spicy and flavorful biryani layered with paneer</p>
             </div>
-            <button class="add-btn" data-item-id="23" onclick="addToCart(23, 'Hyderabadi Paneer Biriyani', 400)">ADD</button>
+            <button class="add-btn" data-item-id="73" onclick="addToCart(73, 'Hyderabadi Paneer Biriyani', 400)">ADD</button>
         </div>
 
         <h2>Tiffin</h2>
@@ -352,7 +503,7 @@
                 <div class="menu-price">₹100</div>
                 <p>Crispy, golden South Indian crepe</p>
             </div>
-            <button class="add-btn" data-item-id="24" onclick="addToCart(24, 'Plain Dosa', 100)">ADD</button>
+            <button class="add-btn" data-item-id="74" onclick="addToCart(74, 'Plain Dosa', 100)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -360,7 +511,7 @@
                 <div class="menu-price">₹60</div>
                 <p>Healthy,Soft and fluffy steamed rice cakes</p>
             </div>
-            <button class="add-btn" data-item-id="25" onclick="addToCart(25, 'Idly', 60)">ADD</button>
+            <button class="add-btn" data-item-id="75" onclick="addToCart(75, 'Idly', 60)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -368,7 +519,7 @@
                 <div class="menu-price">₹80</div>
                 <p>Buttery, mildly spicy, and aromatic with hints of cumin and pepper</p>
             </div>
-            <button class="add-btn" data-item-id="26" onclick="addToCart(26, 'Pongal', 80)">ADD</button>
+            <button class="add-btn" data-item-id="76" onclick="addToCart(76, 'Pongal', 80)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -376,7 +527,7 @@
                 <div class="menu-price">₹60</div>
                 <p>Crispy, savory, and spiced with hints of black pepper and curry leaves</p>
             </div>
-            <button class="add-btn" data-item-id="27" onclick="addToCart(27, 'Vada', 60)">ADD</button>
+            <button class="add-btn" data-item-id="77" onclick="addToCart(77, 'Vada', 60)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -384,7 +535,7 @@
                 <div class="menu-price">₹80</div>
                 <p>Puffy, deep-fried Indian bread, served hot with potato curry</p>
             </div>
-            <button class="add-btn" data-item-id="28" onclick="addToCart(28, 'Poori', 80)">ADD</button>
+            <button class="add-btn" data-item-id="78" onclick="addToCart(78, 'Poori', 80)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -392,7 +543,7 @@
                 <div class="menu-price">₹120</div>
                 <p>Crispy dosa filled with spiced potato masala</p>
             </div>
-            <button class="add-btn" data-item-id="29" onclick="addToCart(29, 'Masala Dosa', 120)">ADD</button>
+            <button class="add-btn" data-item-id="79" onclick="addToCart(79, 'Masala Dosa', 120)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -400,7 +551,7 @@
                 <div class="menu-price">₹130</div>
                 <p>Thick and soft pancake-style dosa topped with caramelized onions and spices</p>
             </div>
-            <button class="add-btn" data-item-id="30" onclick="addToCart(30, 'Onion Uttapam', 130)">ADD</button>
+            <button class="add-btn" data-item-id="80" onclick="addToCart(80, 'Onion Uttapam', 130)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -408,7 +559,7 @@
                 <div class="menu-price">₹140</div>
                 <p>Crispy, aromatic, and mildly spiced with a subtle nuttiness</p>
             </div>
-            <button class="add-btn" data-item-id="31" onclick="addToCart(31, 'Rava Dosa', 140)">ADD</button>
+            <button class="add-btn" data-item-id="81" onclick="addToCart(81, 'Rava Dosa', 140)">ADD</button>
         </div>
 
         <h2>Indian Breads</h2>
@@ -418,7 +569,7 @@
                 <div class="menu-price">₹55</div>
                 <p>Soft and fluffy Indian bread perfect for any curry</p>
             </div>
-            <button class="add-btn" data-item-id="32" onclick="addToCart(32, 'Plain Naan', 55)">ADD</button>
+            <button class="add-btn" data-item-id="82" onclick="addToCart(82, 'Plain Naan', 55)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -426,7 +577,7 @@
                 <div class="menu-price">₹50</div>
                 <p>Simple and healthy whole wheat flatbread</p>
             </div>
-            <button class="add-btn" data-item-id="33" onclick="addToCart(33, 'Plain Roti', 50)">ADD</button>
+            <button class="add-btn" data-item-id="83" onclick="addToCart(83, 'Plain Roti', 50)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -434,7 +585,7 @@
                 <div class="menu-price">₹55</div>
                 <p>Soft and slightly chewy Indian bread</p>
             </div>
-            <button class="add-btn" data-item-id="34" onclick="addToCart(34, 'Plain Kulcha', 55)">ADD</button>
+            <button class="add-btn" data-item-id="84" onclick="addToCart(84, 'Plain Kulcha', 55)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -442,7 +593,7 @@
                 <div class="menu-price">₹66</div>
                 <p>Buttery, soft, and fluffy Indian bread</p>
             </div>
-            <button class="add-btn" data-item-id="35" onclick="addToCart(35, 'Butter Naan', 66)">ADD</button>
+            <button class="add-btn" data-item-id="85" onclick="addToCart(85, 'Butter Naan', 66)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -450,7 +601,7 @@
                 <div class="menu-price">₹90</div>
                 <p>Naan stuffed with a delicious spiced filling</p>
             </div>
-            <button class="add-btn" data-item-id="36" onclick="addToCart(36, 'Stuffed Naan', 90)">ADD</button>
+            <button class="add-btn" data-item-id="86" onclick="addToCart(86, 'Stuffed Naan', 90)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -458,7 +609,7 @@
                 <div class="menu-price">₹50</div>
                 <p>Thin, soft, and healthy whole wheat Indian flatbread</p>
             </div>
-            <button class="add-btn" data-item-id="37" onclick="addToCart(37, 'Chappathi', 50)">ADD</button>
+            <button class="add-btn" data-item-id="87" onclick="addToCart(87, 'Chappathi', 50)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -466,7 +617,7 @@
                 <div class="menu-price">₹60</div>
                 <p>Flaky and crispy South Indian layered bread</p>
             </div>
-            <button class="add-btn" data-item-id="38" onclick="addToCart(38, 'Parotta', 60)">ADD</button>
+            <button class="add-btn" data-item-id="88" onclick="addToCart(88, 'Parotta', 60)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -474,7 +625,7 @@
                 <div class="menu-price">₹110</div>
                 <p>Soft,leavened bread stuffed with spiced paneer filling</p>
             </div>
-            <button class="add-btn" data-item-id="39" onclick="addToCart(39, 'Paneer Kulcha', 110)">ADD</button>
+            <button class="add-btn" data-item-id="89" onclick="addToCart(89, 'Paneer Kulcha', 110)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -482,7 +633,7 @@
                 <div class="menu-price">₹100</div>
                 <p>Stuffed bread filled with spicy potato and onion mixture</p>
             </div>
-            <button class="add-btn" data-item-id="40" onclick="addToCart(40, 'Masala Kulcha', 100)">ADD</button>
+            <button class="add-btn" data-item-id="90" onclick="addToCart(90, 'Masala Kulcha', 100)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -490,7 +641,7 @@
                 <div class="menu-price">₹85</div>
                 <p>Stuffed paratha with a spicy mashed potato filling</p>
             </div>
-            <button class="add-btn" data-item-id="41" onclick="addToCart(41, 'Aloo Paratha', 85)">ADD</button>
+            <button class="add-btn" data-item-id="91" onclick="addToCart(91, 'Aloo Paratha', 85)">ADD</button>
         </div>
 
         <h2>Veg Curries</h2>
@@ -500,7 +651,7 @@
                 <div class="menu-price">₹230</div>
                 <p>Rich and creamy curry with assorted vegetables</p>
             </div>
-            <button class="add-btn" data-item-id="42" onclick="addToCart(42, 'Mixed Veg Curry', 230)">ADD</button>
+            <button class="add-btn" data-item-id="92" onclick="addToCart(92, 'Mixed Veg Curry', 230)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -508,7 +659,7 @@
                 <div class="menu-price">₹310</div>
                 <p>A creamy and mildly sweet paneer curry</p>
             </div>
-            <button class="add-btn" data-item-id="43" onclick="addToCart(43, 'Paneer Butter Masala', 310)">ADD</button>
+            <button class="add-btn" data-item-id="93" onclick="addToCart(93, 'Paneer Butter Masala', 310)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -516,7 +667,7 @@
                 <div class="menu-price">₹300</div>
                 <p>Spicy paneer curry cooked with bell peppers and onions</p>
             </div>
-            <button class="add-btn" data-item-id="44" onclick="addToCart(44, 'Kadai Paneer', 300)">ADD</button>
+            <button class="add-btn" data-item-id="94" onclick="addToCart(94, 'Kadai Paneer', 300)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -524,7 +675,7 @@
                 <div class="menu-price">₹220</div>
                 <p>Yellow lentils tempered with garlic and mustard seeds</p>
             </div>
-            <button class="add-btn" data-item-id="45" onclick="addToCart(45, 'Dal Fry', 220)">ADD</button>
+            <button class="add-btn" data-item-id="95" onclick="addToCart(95, 'Dal Fry', 220)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -532,7 +683,7 @@
                 <div class="menu-price">₹365</div>
                 <p>Soft paneer dumplings in a rich and creamy gravy</p>
             </div>
-            <button class="add-btn" data-item-id="46" onclick="addToCart(46, 'Malai Koftha', 365)">ADD</button>
+            <button class="add-btn" data-item-id="96" onclick="addToCart(96, 'Malai Koftha', 365)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -540,7 +691,7 @@
                 <div class="menu-price">₹340</div>
                 <p>Spicy mixed veggies in a flavorful tomato gravy</p>
             </div>
-            <button class="add-btn" data-item-id="47" onclick="addToCart(47, 'Kadai Vegetables', 340)">ADD</button>
+            <button class="add-btn" data-item-id="97" onclick="addToCart(97, 'Kadai Vegetables', 340)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -548,7 +699,7 @@
                 <div class="menu-price">₹299</div>
                 <p>Spicy,flavorful mushroom curry with rich masala</p>
             </div>
-            <button class="add-btn" data-item-id="48" onclick="addToCart(48, 'Mushroom Masala', 299)">ADD</button>
+            <button class="add-btn" data-item-id="98" onclick="addToCart(98, 'Mushroom Masala', 299)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -556,7 +707,7 @@
                 <div class="menu-price">₹289</div>
                 <p>Baby potatoes cooked in a rich and creamy tomato gravy</p>
             </div>
-            <button class="add-btn" data-item-id="49" onclick="addToCart(49, 'Dum Aloo', 289)">ADD</button>
+            <button class="add-btn" data-item-id="99" onclick="addToCart(99, 'Dum Aloo', 289)">ADD</button>
         </div>
         <div class="menu-item">
             <div class="menu-details">
@@ -564,22 +715,79 @@
                 <div class="menu-price">₹250</div>
                 <p>Spicy and tangy chickpea curry</p>
             </div>
-            <button class="add-btn" data-item-id="50" onclick="addToCart(50, 'Chana Masala', 250)">ADD</button>
+            <button class="add-btn" data-item-id="100" onclick="addToCart(100, 'Chana Masala', 250)">ADD</button>
         </div>
-       
-        <div class="button-group">
-            <a href="/menu">
-                <button class="back-btn">Back</button>
-            </a>
-            <a href="/cart">
-                <button class="cart-btn">Go to Cart</button>
-            </a>
         </div>
     </div>
 
     <script>
+   // Clear localStorage cart if user just logged in/signed up (to prevent cart leakage between accounts)
+   (function() {
+       var clearLocal = {{ clear_local_cart|default(false)|tojson }};
+       if (clearLocal) {
+           localStorage.removeItem('cart');
+           localStorage.removeItem('cart_user_id');
+           console.log('Cart cleared for new user session');
+       }
+   })();
+
+   // Check if cart belongs to current user - if not, clear it
+   (function() {
+       var currentUserId = {{ session.get('user_id', 'null') }};
+       var cartUserId = localStorage.getItem('cart_user_id');
+       
+       if (currentUserId && cartUserId && cartUserId !== String(currentUserId)) {
+           localStorage.removeItem('cart');
+           localStorage.removeItem('cart_user_id');
+           console.log('Cart cleared - belongs to different user');
+       }
+       
+       if (currentUserId) {
+           localStorage.setItem('cart_user_id', String(currentUserId));
+       }
+   })();
+
    // Load cart from localStorage
    let cart = JSON.parse(localStorage.getItem('cart')) || {};
+
+// Wrap all ADD buttons in containers on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Find all buttons with onclick="addToCart"
+    const addButtons = document.querySelectorAll('button.add-btn[onclick*="addToCart"]');
+    
+    addButtons.forEach(button => {
+        // Extract item ID from onclick attribute
+        const onclickAttr = button.getAttribute('onclick');
+        const match = onclickAttr.match(/addToCart\((\d+),/);
+        
+        if (match && match[1]) {
+            const itemId = match[1];
+            
+            // Check if button is already wrapped
+            if (!button.parentElement.id || !button.parentElement.id.startsWith('button-container-')) {
+                // Create wrapper div
+                const wrapper = document.createElement('div');
+                wrapper.id = `button-container-${itemId}`;
+                
+                // Insert wrapper before button
+                button.parentNode.insertBefore(wrapper, button);
+                
+                // Move button into wrapper
+                wrapper.appendChild(button);
+            }
+        }
+    });
+    
+    // Update UI for items in cart
+    cart = JSON.parse(localStorage.getItem('cart')) || {};
+    for (const itemId in cart) {
+        const item = cart[itemId];
+        updateButtonUI(itemId, item.name, item.price);
+    }
+    
+    // Update cart badge
+    updateCartBadge();
+});
 
 // Function to add item to cart
 function addToCart(itemId, itemName, itemPrice) {
@@ -614,6 +822,8 @@ function updateButtonUI(itemId, itemName, itemPrice) {
         return;
     }
     
+    // Always read fresh cart data from localStorage
+    let cart = JSON.parse(localStorage.getItem('cart')) || {};
     const quantity = cart[itemId]?.quantity || 0;
     
     if (quantity > 0) {
