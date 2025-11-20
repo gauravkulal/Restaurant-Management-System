@@ -233,45 +233,26 @@
 
         <!-- Category Grid -->
         <div class="category-grid">
-            <!-- Veg Category -->
+            {% for category in categories %}
             <div class="category-card">
                 <div class="category-icon">
-                    <i class="fas fa-leaf"></i>
+                    <i class="fas fa-{{ category.icon }}"></i>
                 </div>
-                <h3>Vegetarian</h3>
-                <p>Fresh and flavorful vegetarian dishes made with premium ingredients</p>
+                <h3>{{ category.display_name }}</h3>
+                <p>{{ category.item_count }} delicious items to choose from</p>
+                {% if category.category_name == 'Veg' %}
                 <a href="{{ url_for('veg') }}" class="category-btn">View Menu</a>
-            </div>
-
-            <!-- Non-Veg Category -->
-            <div class="category-card">
-                <div class="category-icon">
-                    <i class="fas fa-drumstick-bite"></i>
-                </div>
-                <h3>Non-Vegetarian</h3>
-                <p>Succulent meat dishes cooked to perfection with authentic spices</p>
+                {% elif category.category_name == 'Non-Veg' %}
                 <a href="{{ url_for('nonveg') }}" class="category-btn">View Menu</a>
-            </div>
-
-            <!-- Snacks Category -->
-            <div class="category-card">
-                <div class="category-icon">
-                    <i class="fas fa-cookie-bite"></i>
-                </div>
-                <h3>Snacks & Starters</h3>
-                <p>Crispy and delicious appetizers perfect for any time of day</p>
+                {% elif category.category_name == 'Snacks' %}
                 <a href="{{ url_for('snacks') }}" class="category-btn">View Menu</a>
-            </div>
-
-            <!-- Beverages Category -->
-            <div class="category-card">
-                <div class="category-icon">
-                    <i class="fas fa-mug-hot"></i>
-                </div>
-                <h3>Beverages</h3>
-                <p>Refreshing drinks and traditional chai to complement your meal</p>
+                {% elif category.category_name == 'beverages' %}
                 <a href="{{ url_for('beverages') }}" class="category-btn">View Menu</a>
+                {% else %}
+                <a href="{{ url_for('dynamic_category', category_name=category.category_name) }}" class="category-btn">View Menu</a>
+                {% endif %}
             </div>
+            {% endfor %}
         </div>
     </div>
 </body>

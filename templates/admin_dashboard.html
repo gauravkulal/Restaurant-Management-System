@@ -317,7 +317,15 @@
             <div class="header-title">
                 <h1>📊 Admin Dashboard</h1>
             </div>
-            <a href="{{ url_for('index') }}" class="back-btn">← Back to Home</a>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <a href="{{ url_for('table_orders') }}" class="back-btn" style="background: linear-gradient(135deg, #27ae60, #229954);">
+                    🪑 Table Orders
+                </a>
+                <a href="{{ url_for('admin_menu_management') }}" class="back-btn" style="background: linear-gradient(135deg, #3498db, #2980b9);">
+                    🍽️ Manage Menu
+                </a>
+                <a href="{{ url_for('index') }}" class="back-btn">← Back to Home</a>
+            </div>
         </div>
 
         <!-- Stats Cards -->
@@ -404,7 +412,7 @@
 
         <!-- Top Selling Items -->
         <div class="section">
-            <h2 class="section-title">🔥 Top 10 Selling Items</h2>
+            <h2 class="section-title"> Top 10 Selling Items</h2>
             {% if top_items %}
             <table class="data-table">
                 <thead>
@@ -440,7 +448,7 @@
 
         <!-- Recent Orders -->
         <div class="section">
-            <h2 class="section-title">📦 Recent Orders</h2>
+            <h2 class="section-title"> Recent Orders</h2>
             {% if recent_orders %}
             <table class="data-table">
                 <thead>
@@ -483,7 +491,14 @@
         <!-- Monthly Revenue -->
         {% if monthly_revenue %}
         <div class="section">
-            <h2 class="section-title">📅 Monthly Revenue (Current Year)</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 class="section-title"> Monthly Revenue (Current Year)</h2>
+                <select onchange="sortMonthlyRevenue(this.value)" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: var(--bg-dark); border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                    <option value="reset">Sort by Revenue</option>
+                    <option value="highest">📈 Highest First</option>
+                    <option value="lowest">📉 Lowest First</option>
+                </select>
+            </div>
             <table class="data-table">
                 <thead>
                     <tr>
@@ -492,9 +507,9 @@
                         <th>Revenue</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="monthlyRevenueTableBody">
                     {% for month in monthly_revenue %}
-                    <tr>
+                    <tr data-revenue="{{ month.monthly_revenue }}" data-orders="{{ month.order_count }}" data-month="{{ month.month_name }}">
                         <td><strong>{{ month.month_name }}</strong></td>
                         <td>{{ month.order_count }}</td>
                         <td><strong>₹{{ month.monthly_revenue }}</strong></td>
@@ -507,6 +522,9 @@
     </div>
 
     <script>
+        // Store original order
+        let originalOrder = [];
+        
         // Animate bars on page load
         window.addEventListener('load', function() {
             const bars = document.querySelectorAll('.bar-fill');
@@ -517,7 +535,43 @@
                     bar.style.width = width;
                 }, index * 100);
             });
+            
+            // Store original order of monthly revenue
+            const tbody = document.getElementById('monthlyRevenueTableBody');
+            if (tbody) {
+                originalOrder = Array.from(tbody.querySelectorAll('tr'));
+            }
         });
+        
+        function sortMonthlyRevenue(sortType) {
+            const tbody = document.getElementById('monthlyRevenueTableBody');
+            if (!tbody) return;
+            
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            
+            if (sortType === 'reset') {
+                // Restore original order
+                tbody.innerHTML = '';
+                originalOrder.forEach(row => tbody.appendChild(row.cloneNode(true)));
+                return;
+            }
+            
+            rows.sort((a, b) => {
+                const revenueA = parseFloat(a.getAttribute('data-revenue'));
+                const revenueB = parseFloat(b.getAttribute('data-revenue'));
+                
+                if (sortType === 'highest') {
+                    return revenueB - revenueA; // Descending
+                } else if (sortType === 'lowest') {
+                    return revenueA - revenueB; // Ascending
+                }
+                return 0;
+            });
+            
+            // Clear and re-append sorted rows
+            tbody.innerHTML = '';
+            rows.forEach(row => tbody.appendChild(row));
+        }
     </script>
 </body>
 </html>

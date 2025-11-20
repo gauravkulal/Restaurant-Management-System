@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Management - Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f0f0f;
+            color: #ffffff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(201, 168, 117, 0.2);
+        }
+
+        .header h1 {
+            color: #C9A875;
+            font-size: 2rem;
+        }
+
+        .back-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #C9A875, #A68958);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(201, 168, 117, 0.4);
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(201, 168, 117, 0.2);
+        }
+
+        .section h2 {
+            color: #C9A875;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #C9A875;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(201, 168, 117, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #C9A875;
+            box-shadow: 0 0 10px rgba(201, 168, 117, 0.3);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #C9A875, #A68958);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(201, 168, 117, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .item-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid rgba(201, 168, 117, 0.2);
+            transition: all 0.3s;
+        }
+
+        .item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(201, 168, 117, 0.3);
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .item-name {
+            color: #C9A875;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .item-price {
+            background: rgba(201, 168, 117, 0.2);
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: #C9A875;
+            font-weight: 700;
+        }
+
+        .item-description {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .item-category {
+            display: inline-block;
+            background: rgba(201, 168, 117, 0.15);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #C9A875;
+            margin-bottom: 10px;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .categories-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .category-chip {
+            background: rgba(201, 168, 117, 0.15);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(201, 168, 117, 0.3);
+            transition: all 0.3s;
+        }
+
+        .category-chip:hover {
+            background: rgba(201, 168, 117, 0.25);
+        }
+
+        .category-chip.custom {
+            border-color: #3498db;
+            background: rgba(52, 152, 219, 0.15);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+            display: none;
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid rgba(201, 168, 117, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: #C9A875;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(201, 168, 117, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(201, 168, 117, 0.3);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            color: #C9A875;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-utensils"></i> Menu Management</h1>
+            <a href="/admin-dashboard" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <div class="notification" id="notification"></div>
+
+        <!-- Stats Section -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.total_categories }}</div>
+                <div class="stat-label">Total Categories</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.total_items }}</div>
+                <div class="stat-label">Total Items</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.custom_categories }}</div>
+                <div class="stat-label">Custom Categories</div>
+            </div>
+        </div>
+
+        <!-- Add New Category Section -->
+        <div class="section">
+            <h2><i class="fas fa-folder-plus"></i> Add New Category</h2>
+            <form id="categoryForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="category_name">Category Name (URL-safe)</label>
+                        <input type="text" id="category_name" name="category_name" 
+                               placeholder="e.g., desserts" required>
+                        <small style="color: rgba(255,255,255,0.5);">Use lowercase, no spaces</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="display_name">Display Name</label>
+                        <input type="text" id="display_name" name="display_name" 
+                               placeholder="e.g., Desserts" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Create Category
+                </button>
+            </form>
+        </div>
+
+        <!-- Existing Categories -->
+        <div class="section">
+            <h2><i class="fas fa-list"></i> Existing Categories</h2>
+            <div class="categories-list">
+                {% for category in categories %}
+                <div class="category-chip {% if category.is_custom %}custom{% endif %}">
+                    <strong>{{ category.display_name }}</strong>
+                    <div style="font-size: 0.85rem; color: rgba(255,255,255,0.5); margin-top: 5px;">
+                        {{ category.item_count }} items
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Add New Item Section -->
+        <div class="section">
+            <h2><i class="fas fa-plus-circle"></i> Add New Item</h2>
+            <form id="itemForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="item_name">Item Name</label>
+                        <input type="text" id="item_name" name="item_name" 
+                               placeholder="e.g., Chocolate Cake" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Price (₹)</label>
+                        <input type="number" id="price" name="price" step="0.01" 
+                               placeholder="e.g., 150.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" name="category" required>
+                            <option value="">Select Category</option>
+                            {% for category in categories %}
+                            <option value="{{ category.category_name }}">{{ category.display_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" 
+                              placeholder="Describe the item (optional)"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add Item
+                </button>
+            </form>
+        </div>
+
+        <!-- All Items Section -->
+        <div class="section">
+            <h2><i class="fas fa-th"></i> All Menu Items</h2>
+            <div class="items-grid" id="itemsGrid">
+                {% for item in items %}
+                <div class="item-card" data-item-id="{{ item.item_id }}">
+                    <div class="item-header">
+                        <div class="item-name">{{ item.item_name }}</div>
+                        <div class="item-price">₹{{ item.price }}</div>
+                    </div>
+                    <div class="item-category">{{ item.category }}</div>
+                    {% if item.description %}
+                    <div class="item-description">{{ item.description }}</div>
+                    {% endif %}
+                    <div class="item-actions">
+                        <button class="btn btn-primary" onclick="editItem({{ item.item_id }})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteItem({{ item.item_id }}, '{{ item.item_name }}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Item Modal -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Edit Item</h3>
+                <button class="close-modal" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form id="editForm">
+                <input type="hidden" id="edit_item_id" name="item_id">
+                <div class="form-group">
+                    <label for="edit_item_name">Item Name</label>
+                    <input type="text" id="edit_item_name" name="item_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_price">Price (₹)</label>
+                    <input type="number" id="edit_price" name="price" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_category">Category</label>
+                    <select id="edit_category" name="category" required>
+                        {% for category in categories %}
+                        <option value="{{ category.category_name }}">{{ category.display_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit_description">Description</label>
+                    <textarea id="edit_description" name="description"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Update Item
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Add Category Form
+        document.getElementById('categoryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            
+            try {
+                const response = await fetch('/api/add-category', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(Object.fromEntries(formData))
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showNotification('Category added successfully!', 'success');
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showNotification(data.message || 'Error adding category', 'error');
+                }
+            } catch (error) {
+                showNotification('Error adding category', 'error');
+            }
+        });
+
+        // Add Item Form
+        document.getElementById('itemForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            
+            try {
+                const response = await fetch('/api/add-item', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(Object.fromEntries(formData))
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showNotification('Item added successfully!', 'success');
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showNotification(data.message || 'Error adding item', 'error');
+                }
+            } catch (error) {
+                showNotification('Error adding item', 'error');
+            }
+        });
+
+        // Edit Item
+        async function editItem(itemId) {
+            try {
+                const response = await fetch(`/api/get-item/${itemId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('edit_item_id').value = data.item.item_id;
+                    document.getElementById('edit_item_name').value = data.item.item_name;
+                    document.getElementById('edit_price').value = data.item.price;
+                    document.getElementById('edit_category').value = data.item.category;
+                    document.getElementById('edit_description').value = data.item.description || '';
+                    
+                    document.getElementById('editModal').classList.add('active');
+                }
+            } catch (error) {
+                showNotification('Error loading item', 'error');
+            }
+        }
+
+        // Close Edit Modal
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+        }
+
+        // Update Item Form
+        document.getElementById('editForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            
+            try {
+                const response = await fetch('/api/update-item', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(Object.fromEntries(formData))
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showNotification('Item updated successfully!', 'success');
+                    closeEditModal();
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showNotification(data.message || 'Error updating item', 'error');
+                }
+            } catch (error) {
+                showNotification('Error updating item', 'error');
+            }
+        });
+
+        // Delete Item
+        async function deleteItem(itemId, itemName) {
+            if (!confirm(`Are you sure you want to delete "${itemName}"?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/delete-item', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ item_id: itemId })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showNotification('Item deleted successfully!', 'success');
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showNotification(data.message || 'Error deleting item', 'error');
+                }
+            } catch (error) {
+                showNotification('Error deleting item', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

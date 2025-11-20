@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ category.display_name }} - Chai'osa Restaurant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #C9A875;
+            --secondary-color: #1a1a1a;
+            --accent-color: #B8956A;
+            --text-dark: #e8e8e8;
+            --text-light: #a0a0a0;
+            --bg-dark: #0f0f0f;
+            --bg-card: #1a1a1a;
+            --bg-hover: #252525;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(201, 168, 117, 0.2);
+        }
+
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        .nav-bar {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border: 1px solid rgba(201, 168, 117, 0.1);
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background: var(--bg-hover);
+            color: var(--text-dark);
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .menu-item {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(201, 168, 117, 0.2);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(201, 168, 117, 0.3);
+            border-color: var(--primary-color);
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .item-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .item-price {
+            background: rgba(201, 168, 117, 0.2);
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .item-description {
+            color: var(--text-light);
+            margin-bottom: 15px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(201, 168, 117, 0.1);
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .qty-btn:hover {
+            background: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        .qty-display {
+            font-weight: 700;
+            color: var(--primary-color);
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .add-to-cart-btn {
+            flex: 1;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .add-to-cart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(201, 168, 117, 0.4);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+            display: none;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-utensils"></i> {{ category.display_name }}</h1>
+            <p>Explore our delicious {{ category.display_name }} selection</p>
+        </div>
+
+        <div class="nav-bar">
+            <a href="{{ url_for('menu') }}" class="nav-btn">
+                <i class="fas fa-arrow-left"></i> Back to Menu
+            </a>
+            <a href="{{ url_for('index') }}" class="nav-btn">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="{{ url_for('cart') }}" class="nav-btn">
+                <i class="fas fa-shopping-cart"></i> Cart
+            </a>
+        </div>
+
+        <div class="notification" id="notification"></div>
+
+        {% if items %}
+        <div class="menu-grid">
+            {% for item in items %}
+            <div class="menu-item">
+                <div class="item-header">
+                    <div class="item-name">{{ item.item_name }}</div>
+                    <div class="item-price">₹{{ item.price }}</div>
+                </div>
+                {% if item.description %}
+                <div class="item-description">{{ item.description }}</div>
+                {% endif %}
+                <div class="button-container" id="button-container-{{ item.item_id }}">
+                    <button class="add-to-cart-btn" onclick="addToCart({{ item.item_id }}, '{{ item.item_name }}', {{ item.price }}, '{{ category.category_name }}')">
+                        <i class="fas fa-plus"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <h2>No items available</h2>
+            <p>Check back later for updates to this category</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Clear cart if flag is set
+        {% if clear_local_cart %}
+        localStorage.removeItem('cart');
+        {% endif %}
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 2000);
+        }
+
+        function addToCart(itemId, itemName, price, category) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || {};
+            
+            if (cart[itemId]) {
+                cart[itemId].quantity += 1;
+            } else {
+                cart[itemId] = {
+                    id: itemId,
+                    name: itemName,
+                    price: price,
+                    category: category,
+                    quantity: 1
+                };
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateButtonUI(itemId);
+            showNotification(`${itemName} added to cart!`);
+        }
+
+        function updateQuantity(itemId, change) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || {};
+            
+            if (cart[itemId]) {
+                cart[itemId].quantity += change;
+                
+                if (cart[itemId].quantity <= 0) {
+                    delete cart[itemId];
+                }
+                
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateButtonUI(itemId);
+            }
+        }
+
+        function updateButtonUI(itemId) {
+            const container = document.getElementById(`button-container-${itemId}`);
+            const cart = JSON.parse(localStorage.getItem('cart')) || {};
+            const item = cart[itemId];
+            
+            if (item && item.quantity > 0) {
+                container.innerHTML = `
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQuantity(${itemId}, -1)">−</button>
+                        <span class="qty-display">${item.quantity}</span>
+                        <button class="qty-btn" onclick="updateQuantity(${itemId}, 1)">+</button>
+                    </div>
+                `;
+            } else {
+                const itemData = {{ items | tojson }};
+                const currentItem = itemData.find(i => i.item_id === itemId);
+                if (currentItem) {
+                    container.innerHTML = `
+                        <button class="add-to-cart-btn" onclick="addToCart(${itemId}, '${currentItem.item_name}', ${currentItem.price}, '{{ category.category_name }}')">
+                            <i class="fas fa-plus"></i> Add to Cart
+                        </button>
+                    `;
+                }
+            }
+        }
+
+        // Initialize button states on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const cart = JSON.parse(localStorage.getItem('cart')) || {};
+            for (let itemId in cart) {
+                updateButtonUI(parseInt(itemId));
+            }
+        });
+    </script>
+</body>
+</html>

@@ -201,23 +201,50 @@ def index():
 # Menu Routes
 @app.route('/menu')
 def menu():
+    db = None
+    cursor = None
     try:
-        connection = get_db_connection()
-        if not connection:
-            return render_template('menu.html', items=[], error="Database connection failed")
+        db = get_db_connection()
+        if not db:
+            return render_template('menu.html', categories=[], error="Database connection failed")
             
-        cursor = connection.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM Items")  # Using 'Items' with capital I as per your schema
-        items = cursor.fetchall()
-        return render_template('menu.html', items=items)
+        cursor = db.cursor(dictionary=True)
+        
+        # Get all categories with item counts
+        cursor.execute("""
+            SELECT c.*, COUNT(i.item_id) as item_count 
+            FROM categories c 
+            LEFT JOIN Items i ON c.category_name = i.category 
+            GROUP BY c.category_id 
+            ORDER BY c.is_custom, c.category_name
+        """)
+        categories = cursor.fetchall()
+        
+        # Add icon mapping for categories
+        icon_map = {
+            'Veg': 'leaf',
+            'Non-Veg': 'drumstick-bite',
+            'Snacks': 'cookie-bite',
+            'beverages': 'mug-hot'
+        }
+        
+        for category in categories:
+            # Set icon based on category
+            cat_name = category['category_name']
+            if cat_name in icon_map:
+                category['icon'] = icon_map[cat_name]
+            else:
+                category['icon'] = 'utensils'  # default icon
+        
+        return render_template('menu.html', categories=categories)
     except mysql.connector.Error as err:
         print(f"Database error in menu: {err}")
-        return render_template('menu.html', items=[], error=str(err))
+        return render_template('menu.html', categories=[], error=str(err))
     finally:
-        if 'cursor' in locals() and cursor:
+        if cursor:
             cursor.close()
-        if 'connection' in locals() and connection:
-            connection.close()
+        if db and db.is_connected():
+            db.close()
 
 # Category specific routes
 @app.route('/veg')
@@ -1001,6 +1028,659 @@ def admin_dashboard():
         print(f"Error in admin dashboard: {e}")
         flash(f"Error loading dashboard: {e}")
         return redirect(url_for('index'))
+    finally:
+        if cursor:
+            cursor.close()
+        if db and db.is_connected():
+            db.close()
+
+# Admin Menu Management Routes
+@app.route('/admin-menu-management')
+def admin_menu_management():
+    # Check if user is logged in and is admin
+    if 'user_id' not in session:
+        flash("Please login to access this page")
+        return redirect(url_for('login_page'))
+    
+    if not session.get('is_admin', False):
+        flash("Access Denied: Admin privileges required")
+        return redirect(url_for('index'))
+    
+    db = None
+    cursor = None
+    
+    try:
+        db = get_db_connection()
+        if not db:
+            flash("Database connection failed")
+            return redirect(url_for('admin_dashboard'))
+        
+        cursor = db.cursor(dictionary=True)
+        
+        # Get all categories with item counts
+        cursor.execute("""
+            SELECT c.*, COUNT(i.item_id) as item_count 
+            FROM categories c 
+            LEFT JOIN Items i ON c.category_name = i.category 
+            GROUP BY c.category_id 
+            ORDER BY c.is_custom, c.category_name
+        """)
+        categories = cursor.fetchall()
+        
+        # Get all items
+        cursor.execute("SELECT * FROM Items ORDER BY category, item_name")
+        items = cursor.fetchall()
+        
+        # Get stats
+        cursor.execute("SELECT COUNT(*) as total_categories FROM categories")
+        total_categories_result = cursor.fetchone()
+        total_categories = total_categories_result['total_categories'] if total_categories_result else 0
+        
+        cursor.execute("SELECT COUNT(*) as total_items FROM Items")
+        total_items_result = cursor.fetchone()
+        total_items = total_items_result['total_items'] if total_items_result else 0
+        
+        cursor.execute("SELECT COUNT(*) as custom_categories FROM categories WHERE is_custom = TRUE")
+        custom_categories_result = cursor.fetchone()
+        custom_categories = custom_categories_result['custom_categories'] if custom_categories_result else 0
+        
+        stats = {
+            'total_categories': total_categories,
+            'total_items': total_items,
+            'custom_categories': custom_categories
+        }
+        
+        return render_template('admin_menu_management.html', 
+                             categories=categories, 
+                             items=items, 
+                             stats=stats)
+        
+    except mysql.connector.Error as err:
+        flash(f"Database error: {err}")
+        return redirect(url_for('admin_dashboard'))
+    finally:
+        if cursor:
+            cursor.close()
+        if db and db.is_connected():
+            db.close()
+
+# API Routes for Menu Management
+@app.route('/api/add-category', methods=['POST'])
+def api_add_category():
+    if 'user_id' not in session or not session.get('is_admin', False):
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+    
+    data = request.get_json()
+    category_name = data.get('category_name', '').strip()
+    display_name = data.get('display_name', '').strip()
+    
+    if not category_name or not display_name:
+        return jsonify({'success': False, 'message': 'Category name and display name are required'})
+    
+    db = None
+    cursor = None
+    
+    try:
+        db = get_db_connection()
+        cursor = db.cursor()
+        
+        # Check if category already exists
+        cursor.execute("SELECT * FROM categories WHERE category_name = %s", (category_name,))
+        if cursor.fetchone():
+            return jsonify({'success': False, 'message': 'Category already exists'})
+        
+        # Insert new category
+        cursor.execute("""
+            INSERT INTO categories (category_name, display_name, is_custom) 
+            VALUES (%s, %s, TRUE)
+        """, (category_name, display_name))
+        db.commit()
+        
+        return jsonify({'success': True, 'message': 'Category added successfully'})
+        
+    except mysql.connector.Error as err:
+        return jsonify({'success': False, 'message': f'Database error: {err}'})
+    finally:
+        if cursor:
+            cursor.close()
+        if db and db.is_connected():
+            db.close()
+
+@app.route('/api/add-item', methods=['POST'])
+def api_add_item():
+    if 'user_id' not in session or not session.get('is_admin', False):
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+    
+    data = request.get_json()
+    item_name = data.get('item_name', '').strip()
+    price = data.get('price')
+    category = data.get('category', '').strip()
+    description = data.get('description', '').strip()
+    
+    if not item_name or not price or not category:
+        return jsonify({'success': False, 'message': 'Item name, price, and category are required'})
+    
+    db = None
+    cursor = None
+    
+    try:
+        db = get_db_connection()
+        cursor = db.cursor()
+        
+        # Insert new item
+        cursor.execute("""
+            INSERT INTO Items (item_name, price, category, description) 
+            VALUES (%s, %s, %s, %s)
+        """, (item_name, price, category, description if description else None))
+        db.commit()
+        
+        return jsonify({'success': True, 'message': 'Item added successfully'})
+        
+    except mysql.connector.Error as err:
+        return jsonify({'success': False, 'message': f'Database error: {err}'})
+    finally:
+        if cursor:
+            cursor.close()
+        if db and db.is_connected():
+            db.close()
+
+@app.route('/api/get-item/<int:item_id>')
+def api_get_item(item_id):
+    if 'user_id' not in session or not session.get('is_admin', False):
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+    
+    db = None
+    cursor = None
+    
+    try:
+        db = get_db_connection()
+        cursor = db.cursor(dictionary=True)
+        
+        cursor.execute("SELECT * FROM Items WHERE item_id = %s", (item_id,))
+        item = cursor.fetchone()
+        
+        if item:
+            return jsonify({'success': True, 'item': item})
+        else:
+            return jsonify({'success': False, 'message': 'Item not found'})
+        
+    except mysql.connector.Error as err:
+        return jsonify({'success': False, 'message': f'Database error: {err}'})
+    finally:
+        if cursor:
+            cursor.close()
+        if db and db.is_connected():
+            db.close()
+
+@app.route('/api/update-item', methods=['POST'])
+def api_update_item():
+    if 'user_id' not in session or not session.get('is_admin', False):
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+    
+    data = request.get_json()
+    item_id = data.get('item_id')
+    item_name = data.get('item_name', '').strip()
+    price = data.get('price')
+    category = data.get('category', '').strip()
+    description = data.get('description', '').strip()
+    
+    if not item_id or not item_name or not price or not category:
+        return jsonify({'success': False, 'message': 'All fields are required'})
+    
+    db = None
+    cursor = None
+    
+    try:
+        db = get_db_connection()
+        cursor = db.cursor()
+        
+        cursor.execute("""
+            UPDATE Items 
+            SET item_name = %s, price = %s, category = %s, description = %s 
+            WHERE item_id = %s
+        """, (item_name, price, category, description if description else None, item_id))
+        db.commit()
+        
+        return jsonify({'success': True, 'message': 'Item updated successfully'})
+        
+    except mysql.connector.Error as err:
+        return jsonify({'success': False, 'message': f'Database error: {err}'})
+    finally:
+        if cursor:
+            cursor.close()
+        if db and db.is_connected():
+            db.close()
+
+@app.route('/api/delete-item', methods=['POST'])
+def api_delete_item():
+    if 'user_id' not in session or not session.get('is_admin', False):
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+    
+    data = request.get_json()
+    item_id = data.get('item_id')
+    
+    if not item_id:
+        return jsonify({'success': False, 'message': 'Item ID is required'})
+    
+    db = None
+    cursor = None
+    
+    try:
+        db = get_db_connection()
+        cursor = db.cursor()
+        
+        # Check if item exists in any orders
+        cursor.execute("SELECT COUNT(*) as count FROM order_details WHERE item_id = %s", (item_id,))
+        result = cursor.fetchone()
+        if result and result[0] > 0:
+            return jsonify({'success': False, 'message': 'Cannot delete item: It exists in order history'})
+        
+        # Delete the item
+        cursor.execute("DELETE FROM Items WHERE item_id = %s", (item_id,))
+        db.commit()
+        
+        return jsonify({'success': True, 'message': 'Item deleted successfully'})
+        
+    except mysql.connector.Error as err:
+        return jsonify({'success': False, 'message': f'Database error: {err}'})
+    finally:
+        if cursor:
+            cursor.close()
+        if db and db.is_connected():
+            db.close()
+
+# Dynamic Category Page Route
+@app.route('/category/<category_name>')
+def dynamic_category(category_name):
+    db = None
+    cursor = None
+    
+    try:
+        db = get_db_connection()
+        cursor = db.cursor(dictionary=True)
+        
+        # Get category info
+        cursor.execute("SELECT * FROM categories WHERE category_name = %s", (category_name,))
+        category = cursor.fetchone()
+        
+        if not category:
+            flash("Category not found")
+            return redirect(url_for('menu'))
+        
+        # Get items for this category
+        cursor.execute("SELECT * FROM Items WHERE category = %s ORDER BY item_name", (category_name,))
+        items = cursor.fetchall()
+        
+        clear_local = session.pop('clear_local_cart', False)
+        
+        return render_template('dynamic_category.html', 
+                             category=category, 
+                             items=items,
+                             clear_local_cart=clear_local)
+        
+    except mysql.connector.Error as err:
+        flash(f"Database error: {err}")
+        return redirect(url_for('menu'))
+    finally:
+        if cursor:
+            cursor.close()
+        if db and db.is_connected():
+            db.close()
+
+# Table Orders Management Routes
+@app.route('/table-orders')
+def table_orders():
+    if 'user_id' not in session or not session.get('is_admin', False):
+        flash("Access Denied: Admin privileges required")
+        return redirect(url_for('index'))
+    
+    db = None
+    cursor = None
+    
+    try:
+        db = get_db_connection()
+        if not db:
+            flash("Database connection failed")
+            return redirect(url_for('admin_dashboard'))
+        
+        cursor = db.cursor(dictionary=True)
+        
+        # Get all tables with their current orders
+        cursor.execute("""
+            SELECT 
+                t.*,
+                o.table_order_id,
+                o.total_amount,
+                o.status as order_status
+            FROM restaurant_tables t
+            LEFT JOIN table_orders o ON t.table_id = o.table_id AND o.status = 'active'
+            ORDER BY t.table_number
+        """)
+        tables_data = cursor.fetchall()
+        
+        # Process tables
+        tables = []
+        for table in tables_data:
+            table_dict = {
+                'table_id': table['table_id'],
+                'table_number': table['table_number'],
+                'table_name': table['table_name'],
+                'seats': table['seats'],
+                'status': table['status'],
+                'current_order': None
+            }
+            
+            if table['table_order_id']:
+                table_dict['current_order'] = {
+                    'table_order_id': table['table_order_id'],
+                    'total_amount': table['total_amount']
+                }
+            
+            tables.append(table_dict)
+        
+        # Get all menu items
+        cursor.execute("SELECT item_id, item_name, price, category FROM Items ORDER BY category, item_name")
+        menu_items = cursor.fetchall()
+        
+        # Get stats
+        cursor.execute("SELECT COUNT(*) as total FROM restaurant_tables")
+        total_tables = cursor.fetchone()['total']
+        
+        cursor.execute("SELECT COUNT(*) as available FROM restaurant_tables WHERE status = 'available'")
+        available_tables = cursor.fetchone()['available']
+        
+        cursor.execute("SELECT COUNT(*) as occupied FROM restaurant_tables WHERE status = 'occupied'")
+        occupied_tables = cursor.fetchone()['occupied']
+        
+        cursor.execute("""
+            SELECT COALESCE(SUM(total_amount), 0) as revenue 
+            FROM table_orders 
+            WHERE DATE(completed_at) = CURDATE() AND status = 'completed'
+        """)
+        total_revenue = cursor.fetchone()['revenue']
+        
+        stats = {
+            'total_tables': total_tables,
+            'available_tables': available_tables,
+            'occupied_tables': occupied_tables,
+            'total_revenue': total_revenue
+        }
+        
+        return render_template('table_orders.html', 
+                             tables=tables, 
+                             menu_items=menu_items,
+                             stats=stats)
+        
+    except mysql.connector.Error as err:
+        flash(f"Database error: {err}")
+        return redirect(url_for('admin_dashboard'))
+    finally:
+        if cursor:
+            cursor.close()
+        if db and db.is_connected():
+            db.close()
+
+# API: Add Table
+@app.route('/api/add-table', methods=['POST'])
+def api_add_table():
+    if 'user_id' not in session or not session.get('is_admin', False):
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+    
+    data = request.get_json()
+    table_number = data.get('table_number')
+    table_name = data.get('table_name', '').strip()
+    seats = data.get('seats', 4)
+    
+    if not table_number:
+        return jsonify({'success': False, 'message': 'Table number is required'})
+    
+    db = None
+    cursor = None
+    
+    try:
+        db = get_db_connection()
+        cursor = db.cursor()
+        
+        # Check if table number exists
+        cursor.execute("SELECT * FROM restaurant_tables WHERE table_number = %s", (table_number,))
+        if cursor.fetchone():
+            return jsonify({'success': False, 'message': 'Table number already exists'})
+        
+        # Insert new table
+        cursor.execute("""
+            INSERT INTO restaurant_tables (table_number, table_name, seats) 
+            VALUES (%s, %s, %s)
+        """, (table_number, table_name if table_name else None, seats))
+        db.commit()
+        
+        return jsonify({'success': True, 'message': 'Table added successfully'})
+        
+    except mysql.connector.Error as err:
+        return jsonify({'success': False, 'message': f'Database error: {err}'})
+    finally:
+        if cursor:
+            cursor.close()
+        if db and db.is_connected():
+            db.close()
+
+# API: Delete Table
+@app.route('/api/delete-table', methods=['POST'])
+def api_delete_table():
+    if 'user_id' not in session or not session.get('is_admin', False):
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+    
+    data = request.get_json()
+    table_id = data.get('table_id')
+    
+    if not table_id:
+        return jsonify({'success': False, 'message': 'Table ID is required'})
+    
+    db = None
+    cursor = None
+    
+    try:
+        db = get_db_connection()
+        cursor = db.cursor()
+        
+        # Check if table has active orders
+        cursor.execute("""
+            SELECT COUNT(*) as count 
+            FROM table_orders 
+            WHERE table_id = %s AND status = 'active'
+        """, (table_id,))
+        result = cursor.fetchone()
+        
+        if result and result[0] > 0:
+            return jsonify({'success': False, 'message': 'Cannot delete table with active orders'})
+        
+        # Delete table
+        cursor.execute("DELETE FROM restaurant_tables WHERE table_id = %s", (table_id,))
+        db.commit()
+        
+        return jsonify({'success': True, 'message': 'Table deleted successfully'})
+        
+    except mysql.connector.Error as err:
+        return jsonify({'success': False, 'message': f'Database error: {err}'})
+    finally:
+        if cursor:
+            cursor.close()
+        if db and db.is_connected():
+            db.close()
+
+# API: Save Table Order
+@app.route('/api/save-table-order', methods=['POST'])
+def api_save_table_order():
+    if 'user_id' not in session or not session.get('is_admin', False):
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+    
+    data = request.get_json()
+    table_id = data.get('table_id')
+    order_id = data.get('order_id')
+    items = data.get('items', {})
+    
+    if not table_id or not items:
+        return jsonify({'success': False, 'message': 'Table ID and items are required'})
+    
+    db = None
+    cursor = None
+    
+    try:
+        db = get_db_connection()
+        cursor = db.cursor()
+        
+        # Calculate total
+        total_amount = sum(item['price'] * item['quantity'] for item in items.values())
+        
+        if order_id:
+            # Update existing order
+            cursor.execute("""
+                UPDATE table_orders 
+                SET total_amount = %s 
+                WHERE table_order_id = %s
+            """, (total_amount, order_id))
+            
+            # Delete old items
+            cursor.execute("DELETE FROM table_order_items WHERE table_order_id = %s", (order_id,))
+        else:
+            # Create new order
+            cursor.execute("""
+                INSERT INTO table_orders (table_id, total_amount, status) 
+                VALUES (%s, %s, 'active')
+            """, (table_id, total_amount))
+            order_id = cursor.lastrowid
+            
+            # Update table status
+            cursor.execute("""
+                UPDATE restaurant_tables 
+                SET status = 'occupied' 
+                WHERE table_id = %s
+            """, (table_id,))
+        
+        # Insert order items
+        for item_id, item_data in items.items():
+            subtotal = item_data['price'] * item_data['quantity']
+            cursor.execute("""
+                INSERT INTO table_order_items 
+                (table_order_id, item_id, quantity, price, subtotal) 
+                VALUES (%s, %s, %s, %s, %s)
+            """, (order_id, item_id, item_data['quantity'], item_data['price'], subtotal))
+        
+        db.commit()
+        
+        return jsonify({'success': True, 'message': 'Order saved successfully', 'order_id': order_id})
+        
+    except mysql.connector.Error as err:
+        if db:
+            db.rollback()
+        return jsonify({'success': False, 'message': f'Database error: {err}'})
+    finally:
+        if cursor:
+            cursor.close()
+        if db and db.is_connected():
+            db.close()
+
+# API: Get Table Order
+@app.route('/api/get-table-order/<int:order_id>')
+def api_get_table_order(order_id):
+    if 'user_id' not in session or not session.get('is_admin', False):
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+    
+    db = None
+    cursor = None
+    
+    try:
+        db = get_db_connection()
+        cursor = db.cursor(dictionary=True)
+        
+        cursor.execute("""
+            SELECT 
+                toi.*,
+                i.item_name
+            FROM table_order_items toi
+            JOIN Items i ON toi.item_id = i.item_id
+            WHERE toi.table_order_id = %s
+        """, (order_id,))
+        
+        items = cursor.fetchall()
+        
+        if not items:
+            return jsonify({'success': False, 'message': 'No items in this order. Please add items before completing.'})
+        
+        return jsonify({'success': True, 'items': items})
+        
+    except mysql.connector.Error as err:
+        return jsonify({'success': False, 'message': f'Database error: {err}'})
+    finally:
+        if cursor:
+            cursor.close()
+        if db and db.is_connected():
+            db.close()
+
+# API: Complete Table Order
+@app.route('/api/complete-table-order', methods=['POST'])
+def api_complete_table_order():
+    if 'user_id' not in session or not session.get('is_admin', False):
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+    
+    data = request.get_json()
+    table_id = data.get('table_id')
+    order_id = data.get('order_id')
+    
+    if not table_id or not order_id:
+        return jsonify({'success': False, 'message': 'Table ID and Order ID are required'})
+    
+    db = None
+    cursor = None
+    
+    try:
+        db = get_db_connection()
+        cursor = db.cursor(dictionary=True)
+        
+        # Get order items with details
+        cursor.execute("""
+            SELECT 
+                toi.*,
+                i.item_name
+            FROM table_order_items toi
+            JOIN Items i ON toi.item_id = i.item_id
+            WHERE toi.table_order_id = %s
+        """, (order_id,))
+        
+        items = cursor.fetchall()
+        
+        if not items:
+            return jsonify({'success': False, 'message': 'Order not found or has no items'})
+        
+        # Calculate total
+        total_amount = sum(float(item['subtotal']) for item in items)
+        
+        # Update order with total and mark as completed
+        cursor.execute("""
+            UPDATE table_orders 
+            SET total_amount = %s, status = 'completed', completed_at = NOW() 
+            WHERE table_order_id = %s
+        """, (total_amount, order_id))
+        
+        # Update table status
+        cursor.execute("""
+            UPDATE restaurant_tables 
+            SET status = 'available' 
+            WHERE table_id = %s
+        """, (table_id,))
+        
+        db.commit()
+        
+        return jsonify({
+            'success': True, 
+            'message': 'Order completed successfully',
+            'total': float(total_amount),
+            'items': items
+        })
+        
+    except mysql.connector.Error as err:
+        if db:
+            db.rollback()
+        return jsonify({'success': False, 'message': f'Database error: {err}'})
     finally:
         if cursor:
             cursor.close()
