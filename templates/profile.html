@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Restaurant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;800&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #C9A875;
+            --accent-color: #B8956A;
+            --text-dark: #e8e8e8;
+            --text-light: #a0a0a0;
+            --bg-dark: #0f0f0f;
+            --bg-card: #1a1a1a;
+            --bg-hover: #252525;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Profile Container */
+        .profile-container {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(201, 168, 117, 0.1);
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 35px;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(201, 168, 117, 0.2);
+            border-radius: 10px;
+            background: var(--bg-hover);
+            color: var(--text-dark);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: var(--bg-dark);
+        }
+
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        input[type="text"]:disabled,
+        input[type="email"]:disabled {
+            background-color: rgba(160, 160, 160, 0.1);
+            color: var(--text-light);
+            cursor: not-allowed;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(201, 168, 117, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-hover);
+            color: var(--text-dark);
+            border: 1px solid rgba(201, 168, 117, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(201, 168, 117, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+
+        .flash-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .flash-success {
+            background-color: rgba(72, 187, 120, 0.2);
+            color: #68D391;
+            border: 1px solid rgba(72, 187, 120, 0.3);
+        }
+
+        .flash-error {
+            background-color: rgba(201, 55, 55, 0.2);
+            color: #FC8181;
+            border: 1px solid rgba(201, 55, 55, 0.3);
+        }
+
+        .info-text {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile-container">
+        <h1>My Profile</h1>
+        <p class="subtitle">Manage your personal information</p>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <div class="flash-message flash-success">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="/profile">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" value="{{ user.username or '' }}" disabled>
+                <p class="info-text">Username cannot be changed</p>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" value="{{ user.email or '' }}" disabled>
+                <p class="info-text">Email cannot be changed</p>
+            </div>
+
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" name="full_name" value="{{ user.full_name or '' }}" placeholder="Enter your full name">
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" value="{{ user.phone or '' }}" placeholder="Enter your phone number">
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address</label>
+                <textarea id="address" name="address" placeholder="Enter your full address">{{ user.address or '' }}</textarea>
+                <p class="info-text">This will be auto-filled during checkout</p>
+            </div>
+
+            <div class="button-group">
+                <a href="/index" class="btn btn-secondary">Back to Menu</a>
+                <button type="submit" class="btn btn-primary">Save Profile</button>
+            </div>
+        </form>
+        </div>
+    </div>
+</body>
+</html>

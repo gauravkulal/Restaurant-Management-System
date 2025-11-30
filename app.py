@@ -4,10 +4,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import mysql.connector
 import json
 import os
-from flask_cors import CORS  # Add this import
+from flask_cors import CORS 
 
 app = Flask(__name__)
-CORS(app)  # Add this line right after creating the app
+CORS(app)  
 app.secret_key = os.environ.get('SECRET_KEY', '1234')
 
 # Database Configuration
@@ -30,8 +30,12 @@ def home():
     return render_template('signup.html')
 
 # Authentication routes
-@app.route('/signup', methods=['POST'])
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    if request.method == 'GET':
+        return render_template('signup.html')
+    
+    # POST request handling
     if request.is_json:
         data = request.get_json()
         username = data['username']
@@ -599,12 +603,27 @@ def submit_checkout():
             
         cursor = db.cursor()
         
-        # 1. Insert customer details
+        # 1. Check if customer exists and insert/update accordingly
         cursor.execute(
-            "INSERT INTO customer (name, address, phone_no, email, delivery_option, user_id) VALUES (%s, %s, %s, %s, %s, %s)",
-            (name, address, phone_no, email, delivery_option, user_id)
+            "SELECT customer_id FROM customer WHERE email = %s",
+            (email,)
         )
-        customer_id = cursor.lastrowid
+        existing_customer = cursor.fetchone()
+        
+        if existing_customer:
+            # Update existing customer
+            customer_id = existing_customer[0]
+            cursor.execute(
+                "UPDATE customer SET name = %s, address = %s, phone_no = %s, delivery_option = %s WHERE customer_id = %s",
+                (name, address, phone_no, delivery_option, customer_id)
+            )
+        else:
+            # Insert new customer
+            cursor.execute(
+                "INSERT INTO customer (name, address, phone_no, email, delivery_option, user_id) VALUES (%s, %s, %s, %s, %s, %s)",
+                (name, address, phone_no, email, delivery_option, user_id)
+            )
+            customer_id = cursor.lastrowid
         
         # Store customer details in session for the confirmation page
         session['customer_data'] = {
@@ -721,14 +740,31 @@ def place_order():
             # Start transaction
             db.start_transaction()
             
-            # 1. Insert customer details
-            print("Inserting customer details")
+            # 1. Check if customer exists and insert/update accordingly
+            print("Checking for existing customer")
             cursor.execute(
-                "INSERT INTO customer (name, address, phone_no, email, delivery_option, user_id) VALUES (%s, %s, %s, %s, %s, %s)",
-                (name, address, phone, email, delivery_option, user_id)
+                "SELECT customer_id FROM customer WHERE email = %s",
+                (email,)
             )
-            customer_id = cursor.lastrowid
-            print(f"Customer ID created: {customer_id}")
+            existing_customer = cursor.fetchone()
+            
+            if existing_customer:
+                # Update existing customer
+                customer_id = existing_customer[0]
+                print(f"Updating existing customer ID: {customer_id}")
+                cursor.execute(
+                    "UPDATE customer SET name = %s, address = %s, phone_no = %s, delivery_option = %s WHERE customer_id = %s",
+                    (name, address, phone, delivery_option, customer_id)
+                )
+            else:
+                # Insert new customer
+                print("Inserting new customer")
+                cursor.execute(
+                    "INSERT INTO customer (name, address, phone_no, email, delivery_option, user_id) VALUES (%s, %s, %s, %s, %s, %s)",
+                    (name, address, phone, email, delivery_option, user_id)
+                )
+                customer_id = cursor.lastrowid
+                print(f"Customer ID created: {customer_id}")
             
             # Calculate total amount
             subtotal = data.get('subtotal', 0)
