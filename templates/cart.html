@@ -381,6 +381,17 @@
             }
         })();
 
+        // Hydrate cart from server session when localStorage is empty (or was just cleared)
+        (function() {
+            const serverCart = {{ server_cart|default({})|tojson }};
+            const hasLocalCart = localStorage.getItem('cart');
+            const localCartParsed = hasLocalCart ? JSON.parse(hasLocalCart) : {};
+            const shouldHydrate = (!hasLocalCart || Object.keys(localCartParsed).length === 0) && serverCart && serverCart.items;
+            if (shouldHydrate) {
+                localStorage.setItem('cart', JSON.stringify(serverCart.items));
+            }
+        })();
+
         function loadCart() {
             cart = JSON.parse(localStorage.getItem('cart')) || {};
             displayCart();
@@ -433,26 +444,65 @@
             document.getElementById('total-amount').textContent = `₹${total}`;
         }
 
-        function increaseQuantity(itemId) {
+        async function increaseQuantity(itemId) {
             if (cart[itemId]) {
                 cart[itemId].quantity++;
                 localStorage.setItem('cart', JSON.stringify(cart));
                 displayCart();
+                await syncCartQuantity(itemId, cart[itemId].quantity);
             }
         }
 
-        function decreaseQuantity(itemId) {
-            if (cart[itemId] && cart[itemId].quantity > 1) {
-                cart[itemId].quantity--;
+        async function decreaseQuantity(itemId) {
+            if (cart[itemId]) {
+                if (cart[itemId].quantity > 1) {
+                    cart[itemId].quantity--;
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    displayCart();
+                    await syncCartQuantity(itemId, cart[itemId].quantity);
+                } else {
+                    await removeItem(itemId);
+                }
+            }
+        }
+
+        async function removeItem(itemId) {
+            if (cart[itemId]) {
+                delete cart[itemId];
                 localStorage.setItem('cart', JSON.stringify(cart));
                 displayCart();
+                await syncCartQuantity(itemId, 0);
             }
         }
 
-        function removeItem(itemId) {
-            delete cart[itemId];
-            localStorage.setItem('cart', JSON.stringify(cart));
-            displayCart();
+        async function syncCartQuantity(itemId, quantity) {
+            try {
+                let response = await fetch('/update-cart', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ item_id: itemId, quantity: quantity })
+                });
+                if (!response.ok && quantity > 0) {
+                    await fetch('/add-to-cart', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'same-origin',
+                        body: JSON.stringify({ item_id: itemId })
+                    });
+                    response = await fetch('/update-cart', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'same-origin',
+                        body: JSON.stringify({ item_id: itemId, quantity: quantity })
+                    });
+                }
+                if (!response.ok) {
+                    console.warn('Cart sync failed with status', response.status);
+                }
+            } catch (error) {
+                console.warn('Failed to sync cart quantity', error);
+            }
         }
 
         function proceedToCheckout() {

@@ -312,7 +312,7 @@
             }, 2000);
         }
 
-        function addToCart(itemId, itemName, price, category) {
+        async function addToCart(itemId, itemName, price, category) {
             let cart = JSON.parse(localStorage.getItem('cart')) || {};
             
             if (cart[itemId]) {
@@ -330,9 +330,10 @@
             localStorage.setItem('cart', JSON.stringify(cart));
             updateButtonUI(itemId);
             showNotification(`${itemName} added to cart!`);
+            await syncAddToCart(itemId);
         }
 
-        function updateQuantity(itemId, change) {
+        async function updateQuantity(itemId, change) {
             let cart = JSON.parse(localStorage.getItem('cart')) || {};
             
             if (cart[itemId]) {
@@ -344,6 +345,8 @@
                 
                 localStorage.setItem('cart', JSON.stringify(cart));
                 updateButtonUI(itemId);
+                const nextQuantity = cart[itemId] ? cart[itemId].quantity : 0;
+                await syncUpdateCart(itemId, nextQuantity);
             }
         }
 
@@ -374,6 +377,32 @@
         }
 
         // Initialize button states on page load
+        async function syncAddToCart(itemId) {
+            try {
+                await fetch('/add-to-cart', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ item_id: itemId })
+                });
+            } catch (error) {
+                console.warn('Failed to sync add-to-cart', error);
+            }
+        }
+
+        async function syncUpdateCart(itemId, quantity) {
+            try {
+                await fetch('/update-cart', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ item_id: itemId, quantity: quantity })
+                });
+            } catch (error) {
+                console.warn('Failed to sync cart quantity', error);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const cart = JSON.parse(localStorage.getItem('cart')) || {};
             for (let itemId in cart) {

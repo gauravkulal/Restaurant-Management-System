@@ -1,9 +1,9 @@
 import datetime
+import json
+import os
 from flask import Flask, request, render_template, redirect, url_for, jsonify, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 import mysql.connector
-import json
-import os
 from flask_cors import CORS 
 
 app = Flask(__name__)
@@ -61,6 +61,7 @@ def signup():
         user_id = cursor.lastrowid
         session['user_id'] = user_id
         session['username'] = username
+        session['cart_owner'] = user_id
         # Set flag to clear any existing localStorage cart from anonymous browsing
         session['clear_local_cart'] = True
         return redirect(url_for('index'))
@@ -98,6 +99,7 @@ def login():
             
             # Check if there's an existing cart that belongs to a different user
             old_cart_owner = session.get('cart_owner')
+            existing_cart = session.get('cart_data') if old_cart_owner == current_user_id else None
             
             # Clear the entire session to remove any previous user's data
             session.clear()
@@ -106,9 +108,13 @@ def login():
             session['user_id'] = current_user_id
             session['username'] = user['username']
             session['is_admin'] = user.get('is_admin', False)  # Store admin status
+            session['cart_owner'] = current_user_id
             
-            # Always set flag to clear localStorage cart on login to ensure isolation
-            session['clear_local_cart'] = True
+            if existing_cart:
+                session['cart_data'] = existing_cart
+                session['clear_local_cart'] = False
+            else:
+                session['clear_local_cart'] = True
             
             return redirect(url_for('index'))
         else:
@@ -250,32 +256,90 @@ def menu():
         if db and db.is_connected():
             db.close()
 
+def _normalize_category_key(value: str) -> str:
+    """Collapse a category label to a lowercase alphanumeric slug for comparisons."""
+    if not value:
+        return ''
+    return ''.join(ch for ch in value.lower() if ch.isalnum())
+
+
 # Category specific routes
+def render_category_page(category_name):
+    """Render a category page with live menu data from the Items table."""
+    db = None
+    cursor = None
+    try:
+        db = get_db_connection()
+        cursor = db.cursor(dictionary=True)
+
+        cursor.execute("SELECT * FROM categories WHERE category_name = %s", (category_name,))
+        category = cursor.fetchone()
+        if not category:
+            flash("Category not found")
+            return redirect(url_for('menu'))
+
+        slug_candidates = []
+        primary_slug = _normalize_category_key(category['category_name'])
+        if primary_slug:
+            slug_candidates.append(primary_slug)
+        display_slug = _normalize_category_key(category.get('display_name'))
+        if display_slug and display_slug not in slug_candidates:
+            slug_candidates.append(display_slug)
+
+        slug_candidates = [slug for slug in slug_candidates if slug]
+        if slug_candidates:
+            slug_expr = "REPLACE(REPLACE(REPLACE(LOWER(category), '-', ''), ' ', ''), '_', '')"
+            placeholders = ', '.join(['%s'] * len(slug_candidates))
+            cursor.execute(
+                f"SELECT * FROM Items WHERE {slug_expr} IN ({placeholders}) ORDER BY item_name",
+                slug_candidates
+            )
+            items = cursor.fetchall()
+        else:
+            items = []
+
+        clear_local = session.pop('clear_local_cart', False)
+        return render_template('dynamic_category.html',
+                               category=category,
+                               items=items,
+                               clear_local_cart=clear_local)
+    except mysql.connector.Error as err:
+        flash(f"Database error: {err}")
+        return redirect(url_for('menu'))
+    finally:
+        if cursor:
+            cursor.close()
+        if db and db.is_connected():
+            db.close()
+
 @app.route('/veg')
 def veg():
-    clear_local = session.pop('clear_local_cart', False)
-    return render_template('veg.html', clear_local_cart=clear_local)
+    return render_category_page('Veg')
 
 @app.route('/nonveg')
 def nonveg():
-    clear_local = session.pop('clear_local_cart', False)
-    return render_template('nonveg.html', clear_local_cart=clear_local)
+    return render_category_page('Non-Veg')
 
 @app.route('/snacks')
 def snacks():
-    clear_local = session.pop('clear_local_cart', False)
-    return render_template('snacks.html', clear_local_cart=clear_local)
+    return render_category_page('Snacks')
 
 @app.route('/beverages')
 def beverages():
-    clear_local = session.pop('clear_local_cart', False)
-    return render_template('beverages.html', clear_local_cart=clear_local)
+    return render_category_page('beverages')
 
 # Cart routes
 @app.route('/cart')
 def cart():
     clear_local = session.pop('clear_local_cart', False)
-    return render_template("cart.html", clear_local_cart=clear_local)
+    server_cart = None
+    cart_snapshot = session.get('cart_data')
+    if cart_snapshot:
+        try:
+            server_cart = json.loads(cart_snapshot)
+        except (json.JSONDecodeError, TypeError):
+            server_cart = None
+    return render_template("cart.html", clear_local_cart=clear_local, server_cart=server_cart)
 
 @app.route('/add-to-cart', methods=['POST'])
 def add_to_cart():
@@ -342,24 +406,47 @@ def update_cart():
         item_id = data.get('item_id')
         quantity = int(data.get('quantity', 0))
         
-        # Parse existing cart
+        # Parse existing cart, initialize if missing so we can resync from client state
         if 'cart_data' not in session:
-            return jsonify({'success': False, 'message': 'Cart is empty'}), 400
-            
+            session['cart_data'] = json.dumps({"items": {}})
         cart = json.loads(session['cart_data'])
         
-        # Update or remove item
-        if str(item_id) in cart['items']:
+        item_key = str(item_id)
+        if quantity > 0 and item_key not in cart['items']:
+            # create entry so quantity sync can succeed even if server cart missed earlier additions
+            conn = get_db_connection()
+            item_row = None
+            try:
+                if conn:
+                    cur = conn.cursor(dictionary=True)
+                    cur.execute("SELECT * FROM Items WHERE item_id = %s", (item_id,))
+                    item_row = cur.fetchone()
+            finally:
+                if 'cur' in locals():
+                    cur.close()
+                if conn:
+                    conn.close()
+
+            if not item_row:
+                return jsonify({'success': False, 'message': 'Item not found'}), 404
+
+            cart['items'][item_key] = {
+                'id': item_id,
+                'name': item_row['item_name'],
+                'price': float(item_row['price']),
+                'category': item_row['category'],
+                'quantity': 0
+            }
+        
+        if item_key in cart['items']:
             if quantity > 0:
-                cart['items'][str(item_id)]['quantity'] = quantity
+                cart['items'][item_key]['quantity'] = quantity
             else:
-                del cart['items'][str(item_id)]
+                del cart['items'][item_key]
                 
-            # Save updated cart to session
             session['cart_data'] = json.dumps(cart)
-            
             return jsonify({
-                'success': True, 
+                'success': True,
                 'message': 'Cart updated',
                 'cart': cart
             })
@@ -1328,40 +1415,7 @@ def api_delete_item():
 # Dynamic Category Page Route
 @app.route('/category/<category_name>')
 def dynamic_category(category_name):
-    db = None
-    cursor = None
-    
-    try:
-        db = get_db_connection()
-        cursor = db.cursor(dictionary=True)
-        
-        # Get category info
-        cursor.execute("SELECT * FROM categories WHERE category_name = %s", (category_name,))
-        category = cursor.fetchone()
-        
-        if not category:
-            flash("Category not found")
-            return redirect(url_for('menu'))
-        
-        # Get items for this category
-        cursor.execute("SELECT * FROM Items WHERE category = %s ORDER BY item_name", (category_name,))
-        items = cursor.fetchall()
-        
-        clear_local = session.pop('clear_local_cart', False)
-        
-        return render_template('dynamic_category.html', 
-                             category=category, 
-                             items=items,
-                             clear_local_cart=clear_local)
-        
-    except mysql.connector.Error as err:
-        flash(f"Database error: {err}")
-        return redirect(url_for('menu'))
-    finally:
-        if cursor:
-            cursor.close()
-        if db and db.is_connected():
-            db.close()
+    return render_category_page(category_name)
 
 # Table Orders Management Routes
 @app.route('/table-orders')
