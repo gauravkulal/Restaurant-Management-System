@@ -9,10 +9,27 @@ db_config = {
     'database': 'restaurant_management'
 }
 
+def ensure_admin(cursor, username, email, password):
+    """Ensure the given user exists and has admin privileges."""
+    cursor.execute("SELECT user_id FROM user WHERE username = %s", (username,))
+    existing_user = cursor.fetchone()
+
+    if existing_user:
+        cursor.execute("UPDATE user SET is_admin = TRUE WHERE username = %s", (username,))
+        print(f"✓ Updated existing user '{username}' to admin")
+    else:
+        hashed_password = generate_password_hash(password)
+        cursor.execute(
+            "INSERT INTO user (username, email, password, is_admin) VALUES (%s, %s, %s, %s)",
+            (username, email, hashed_password, True)
+        )
+        print(f"✓ Created new admin user '{username}' with password '{password}'")
+
+
 try:
     # Connect to database
     db = mysql.connector.connect(**db_config)
-    cursor = db.cursor()
+    cursor = db.cursor(buffered=True)
     
     print("Connected to database successfully!")
     
@@ -27,31 +44,18 @@ try:
         else:
             print(f"Error adding column: {e}")
     
-    # Step 2: Check if admin user exists
-    cursor.execute("SELECT user_id FROM user WHERE username = 'gaurav'")
-    existing_user = cursor.fetchone()
-    
-    if existing_user:
-        # Update existing user to be admin
-        cursor.execute("UPDATE user SET is_admin = TRUE WHERE username = 'gaurav'")
-        db.commit()
-        print("✓ Updated existing user 'gaurav' to admin")
-    else:
-        # Create new admin user
-        hashed_password = generate_password_hash('1234')
-        cursor.execute(
-            "INSERT INTO user (username, email, password, is_admin) VALUES (%s, %s, %s, %s)",
-            ('gaurav', 'admin@chaiosa.com', hashed_password, True)
-        )
-        db.commit()
-        print("✓ Created new admin user 'gaurav' with password '1234'")
-    
+    # Step 2: Ensure required admin accounts exist
+    ensure_admin(cursor, 'gaurav', 'admin@chaiosa.com', '1234')
+    db.commit()
+    ensure_admin(cursor, 'aryan', 'aryan@gmail.com', '1234')
+    db.commit()
+
     print("\n" + "="*50)
     print("Admin setup completed successfully!")
     print("="*50)
-    print("\nAdmin Credentials:")
-    print("  Username: gaurav")
-    print("  Password: 1234")
+    print("\nAdmin Credentials Updated:")
+    print("  Username: gaurav | Password: 1234")
+    print("  Username: aryan  | Password: 1234")
     print("\nYou can now login with these credentials to access the admin dashboard.")
     print("="*50)
     

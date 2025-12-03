@@ -92,7 +92,12 @@ def login():
             return render_template('login.html')
             
         cursor = db.cursor(dictionary=True)
-        cursor.execute("SELECT user_id, password, username, is_admin FROM user WHERE username = %s", (username,))
+        cursor.execute("""
+            SELECT user_id, password, username, is_admin
+            FROM user
+            WHERE username = %s
+            LIMIT 1
+        """, (username,))
         user = cursor.fetchone()
         if user and check_password_hash(user['password'], password):
             current_user_id = user['user_id']
@@ -118,7 +123,7 @@ def login():
             
             return redirect(url_for('index'))
         else:
-            flash("Login Failed: Invalid credentials")
+            flash("Wrong username or password", "error")
             return render_template('login.html')
     except mysql.connector.Error as err:
         print(f"Database error in login: {err}")
@@ -133,7 +138,7 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('home'))
+    return redirect(url_for('login_page'))
 
 # Profile management
 @app.route('/profile', methods=['GET', 'POST'])

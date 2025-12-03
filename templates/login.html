@@ -241,6 +241,24 @@
             text-decoration: underline;
         }
 
+        .alert-container {
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            border: 1px solid transparent;
+            color: #fff;
+            text-align: left;
+        }
+
+        .alert-error {
+            background: rgba(217, 83, 79, 0.15);
+            border-color: rgba(217, 83, 79, 0.5);
+        }
+
         /* Responsive Design */
         @media (max-width: 480px) {
             .login-box {
@@ -272,6 +290,16 @@
             <h2>Welcome Back</h2>
             <p>Sign in to continue to your account</p>
 
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    <div class="alert-container">
+                        {% for category, message in messages %}
+                            <div class="alert {{ 'alert-error' if category == 'error' else '' }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
             <form id="loginForm" method="POST">
                 <div class="input-group">
                     <label for="username">Username</label>
@@ -286,7 +314,7 @@
                 <button type="submit" class="continue-btn">Sign In</button>
             </form>
 
-            <p class="signup-text">Don't have an account? <a href="signup.html">Create Account</a></p>
+            <p class="signup-text">Don't have an account? <a href="{{ url_for('signup') }}">Create Account</a></p>
         </div>
     </div>
 
