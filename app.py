@@ -224,7 +224,7 @@ def menu():
         cursor.execute("""
             SELECT c.*, COUNT(i.item_id) as item_count 
             FROM categories c 
-            LEFT JOIN Items i ON c.category_name = i.category 
+            LEFT JOIN Items i ON c.category_id = i.category_id 
             GROUP BY c.category_id 
             ORDER BY c.is_custom, c.category_name
         """)
@@ -278,25 +278,13 @@ def render_category_page(category_name):
             flash("Category not found")
             return redirect(url_for('menu'))
 
-        slug_candidates = []
-        primary_slug = _normalize_category_key(category['category_name'])
-        if primary_slug:
-            slug_candidates.append(primary_slug)
-        display_slug = _normalize_category_key(category.get('display_name'))
-        if display_slug and display_slug not in slug_candidates:
-            slug_candidates.append(display_slug)
-
-        slug_candidates = [slug for slug in slug_candidates if slug]
-        if slug_candidates:
-            slug_expr = "REPLACE(REPLACE(REPLACE(LOWER(category), '-', ''), ' ', ''), '_', '')"
-            placeholders = ', '.join(['%s'] * len(slug_candidates))
-            cursor.execute(
-                f"SELECT * FROM Items WHERE {slug_expr} IN ({placeholders}) ORDER BY item_name",
-                slug_candidates
-            )
-            items = cursor.fetchall()
-        else:
-            items = []
+        # Fetch items by category_id using the FK relationship
+        cursor.execute("""
+            SELECT i.* FROM Items i
+            WHERE i.category_id = %s
+            ORDER BY i.item_name
+        """, (category['category_id'],))
+        items = cursor.fetchall()
 
         clear_local = session.pop('clear_local_cart', False)
         return render_template('dynamic_category.html',
@@ -981,9 +969,10 @@ def order_confirmation():
         items = []
         if order:
             cursor.execute("""
-                SELECT od.*, i.item_name, i.category
+                SELECT od.*, i.item_name, c.category_name as category
                 FROM order_details od
                 JOIN Items i ON od.item_id = i.item_id
+                LEFT JOIN categories c ON i.category_id = c.category_id
                 WHERE od.order_id = %s
             """, (order['order_id'],))
             items = cursor.fetchall()
@@ -1001,7 +990,7 @@ def order_confirmation():
             }
             session['last_order_data'] = json.dumps(order_data)
         
-        return render_template('order_confirmation.html', order_id=order_id)
+        return render_template('order-confirmation.html', order_id=order_id)
                               
     except mysql.connector.Error as err:
         print(f"Database error in order-confirmation: {err}")
@@ -1061,13 +1050,14 @@ def admin_dashboard():
         
         # 5. Top 10 Selling Items
         cursor.execute("""
-            SELECT i.item_name, i.category, i.price,
+            SELECT i.item_name, c.category_name as category, i.price,
                    COUNT(od.item_id) as order_count,
                    SUM(od.quantity) as total_quantity,
                    SUM(od.total_price) as total_revenue
             FROM order_details od
             JOIN Items i ON od.item_id = i.item_id
-            GROUP BY od.item_id, i.item_name, i.category, i.price
+            LEFT JOIN categories c ON i.category_id = c.category_id
+            GROUP BY od.item_id, i.item_name, c.category_name, i.price
             ORDER BY total_quantity DESC
             LIMIT 10
         """)
@@ -1075,12 +1065,13 @@ def admin_dashboard():
         
         # 6. Revenue by Category
         cursor.execute("""
-            SELECT i.category,
+            SELECT c.category_name as category,
                    COUNT(od.item_id) as item_count,
                    SUM(od.total_price) as category_revenue
             FROM order_details od
             JOIN Items i ON od.item_id = i.item_id
-            GROUP BY i.category
+            LEFT JOIN categories c ON i.category_id = c.category_id
+            GROUP BY c.category_name
             ORDER BY category_revenue DESC
         """)
         category_revenue = cursor.fetchall()
@@ -1184,14 +1175,19 @@ def admin_menu_management():
         cursor.execute("""
             SELECT c.*, COUNT(i.item_id) as item_count 
             FROM categories c 
-            LEFT JOIN Items i ON c.category_name = i.category 
+            LEFT JOIN Items i ON c.category_id = i.category_id 
             GROUP BY c.category_id 
             ORDER BY c.is_custom, c.category_name
         """)
         categories = cursor.fetchall()
         
-        # Get all items
-        cursor.execute("SELECT * FROM Items ORDER BY category, item_name")
+        # Get all items with category names
+        cursor.execute("""
+            SELECT i.*, c.category_name as category 
+            FROM Items i
+            LEFT JOIN categories c ON i.category_id = c.category_id
+            ORDER BY c.category_name, i.item_name
+        """)
         items = cursor.fetchall()
         
         # Get stats
@@ -1290,11 +1286,19 @@ def api_add_item():
         db = get_db_connection()
         cursor = db.cursor()
         
+        # Get category_id from category name
+        cursor.execute("SELECT category_id FROM categories WHERE category_name = %s", (category,))
+        cat_result = cursor.fetchone()
+        if not cat_result:
+            return jsonify({'success': False, 'message': 'Invalid category'})
+        
+        category_id = cat_result[0]
+        
         # Insert new item
         cursor.execute("""
-            INSERT INTO Items (item_name, price, category, description) 
+            INSERT INTO Items (item_name, price, category_id, description) 
             VALUES (%s, %s, %s, %s)
-        """, (item_name, price, category, description if description else None))
+        """, (item_name, price, category_id, description if description else None))
         db.commit()
         
         return jsonify({'success': True, 'message': 'Item added successfully'})
@@ -1319,7 +1323,13 @@ def api_get_item(item_id):
         db = get_db_connection()
         cursor = db.cursor(dictionary=True)
         
-        cursor.execute("SELECT * FROM Items WHERE item_id = %s", (item_id,))
+        # Get item with category name via JOIN
+        cursor.execute("""
+            SELECT i.*, c.category_name as category 
+            FROM Items i
+            LEFT JOIN categories c ON i.category_id = c.category_id
+            WHERE i.item_id = %s
+        """, (item_id,))
         item = cursor.fetchone()
         
         if item:
@@ -1357,11 +1367,19 @@ def api_update_item():
         db = get_db_connection()
         cursor = db.cursor()
         
+        # Get category_id from category name
+        cursor.execute("SELECT category_id FROM categories WHERE category_name = %s", (category,))
+        cat_result = cursor.fetchone()
+        if not cat_result:
+            return jsonify({'success': False, 'message': 'Invalid category'})
+        
+        category_id = cat_result[0]
+        
         cursor.execute("""
             UPDATE Items 
-            SET item_name = %s, price = %s, category = %s, description = %s 
+            SET item_name = %s, price = %s, category_id = %s, description = %s 
             WHERE item_id = %s
-        """, (item_name, price, category, description if description else None, item_id))
+        """, (item_name, price, category_id, description if description else None, item_id))
         db.commit()
         
         return jsonify({'success': True, 'message': 'Item updated successfully'})

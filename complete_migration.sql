@@ -1,41 +1,35 @@
--- NOTE: run this script against your Restaurant Management database
+-- Complete the category_id migration
+-- Run this after the initial migration script has already added the category_id column
 USE restaurant_management;
 
--- 1. Add category_id column (nullable during back-fill)
-ALTER TABLE Items
-  ADD COLUMN category_id INT NULL AFTER category;
-
--- 1b. Normalize legacy category labels so that everything maps to an
---     existing row in categories
+-- Step 1: Remap legacy category names to existing categories
 UPDATE Items SET category = 'Non-Veg' WHERE category IN ('Non-Veg Snacks');
 UPDATE Items SET category = 'Snacks'  WHERE category IN ('Sandwiches','Rolls');
 UPDATE Items SET category = 'Veg'     WHERE category = 'Meals';
 
--- 2. Populate category_id using normalized category keys so that
---    values such as "Non-Veg" == "nonveg" == "Non Veg"
+-- Step 2: Back-fill category_id using normalized matching
 UPDATE Items i
 JOIN categories c ON REPLACE(REPLACE(REPLACE(LOWER(c.category_name), '-', ''), ' ', ''), '_', '')
                   = REPLACE(REPLACE(REPLACE(LOWER(i.category), '-', ''), ' ', ''), '_', '')
-SET i.category_id = c.category_id;
+SET i.category_id = c.category_id
+WHERE i.category_id IS NULL;
 
--- 2b. Also try matching against display_name for safety
+-- Step 2b: Fallback match against display_name
 UPDATE Items i
 JOIN categories c ON i.category_id IS NULL
                  AND REPLACE(REPLACE(REPLACE(LOWER(c.display_name), '-', ''), ' ', ''), '_', '')
                      = REPLACE(REPLACE(REPLACE(LOWER(i.category), '-', ''), ' ', ''), '_', '')
 SET i.category_id = c.category_id;
 
--- 3. Report any rows that failed to map (should be zero)
+-- Step 3: Verify no unmapped items remain
 SELECT item_id, item_name, category
 FROM Items
 WHERE category_id IS NULL;
 
--- Resolve any rows shown above before proceeding (create the category or adjust data)
+-- Step 4: Enforce NOT NULL constraint
+ALTER TABLE Items MODIFY category_id INT NOT NULL;
 
--- 4. Enforce NOT NULL + FK constraint
-ALTER TABLE Items
-  MODIFY category_id INT NOT NULL;
-
+-- Step 5: Add foreign key constraint
 ALTER TABLE Items
   ADD CONSTRAINT fk_items_category
     FOREIGN KEY (category_id)
@@ -43,15 +37,12 @@ ALTER TABLE Items
     ON UPDATE CASCADE
     ON DELETE RESTRICT;
 
--- 5. Helpful index for joins
+-- Step 6: Create index for performance
 CREATE INDEX idx_items_category_id ON Items(category_id);
 
--- 6. Verification query
+-- Step 7: Verification - show item counts per category
 SELECT c.category_name, COUNT(i.item_id) AS item_count
 FROM categories c
 LEFT JOIN Items i ON i.category_id = c.category_id
 GROUP BY c.category_id, c.category_name
 ORDER BY c.category_name;
-
--- 7. (Optional, after testing) drop legacy text column
--- ALTER TABLE Items DROP COLUMN category;
